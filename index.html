@@ -382,6 +382,39 @@
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMtUp7Dea6wtdsO-95uK2sL56ZSFasCweNOFoigfbjjmqsfApBKrlTTxDHn--_YgKi/exec";
 
+    // ================= PENGATURAN SESSION TIMEOUT =================
+    // 30 Menit dalam milidetik (30 * 60 * 1000). Ubah jika ingin lebih cepat/lama.
+    const SESSION_TIMEOUT_MS = 30 * 60 * 1000; 
+
+    function updateSessionActivity() {
+      if (localStorage.getItem('activeLoggedInUser')) {
+        localStorage.setItem('lastSessionActive', Date.now());
+      }
+    }
+
+    function checkSessionExpired() {
+      const activeUser = localStorage.getItem('activeLoggedInUser');
+      const lastActive = localStorage.getItem('lastSessionActive');
+
+      if (activeUser && lastActive) {
+        const timeElapsed = Date.now() - Number(lastActive);
+        if (timeElapsed > SESSION_TIMEOUT_MS) {
+          // Sesi sudah kedaluwarsa karena lama tidak login/tidak aktif
+          localStorage.removeItem('activeLoggedInUser');
+          localStorage.removeItem('activeLoggedInRole');
+          localStorage.removeItem('lastSessionActive');
+          return true;
+        }
+      }
+      return false;
+    }
+
+    // Pantau aktivitas pengguna di layar (mouse, keyboard, scroll, touch)
+    ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(evt => {
+      window.addEventListener(evt, updateSessionActivity, { passive: true });
+    });
+
+    // Inisialisasi Akun
     let userAccounts = JSON.parse(localStorage.getItem('app_user_accounts')) || [];
 
     function ensureAccounts() {
@@ -470,6 +503,9 @@
     }
 
     function checkAuth() {
+      // Periksa apakah sesi telah kedaluwarsa karena lama tidak aktif
+      const isExpired = checkSessionExpired();
+
       const activeUser = localStorage.getItem('activeLoggedInUser');
       let activeRole = localStorage.getItem('activeLoggedInRole') || "user";
 
@@ -480,7 +516,8 @@
 
       currentUserRole = activeRole;
 
-      if (activeUser) {
+      if (activeUser && !isExpired) {
+        updateSessionActivity();
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('dashboardApp').classList.remove('hidden');
 
@@ -502,6 +539,9 @@
       } else {
         document.getElementById('loginScreen').classList.remove('hidden');
         document.getElementById('dashboardApp').classList.add('hidden');
+        if (isExpired) {
+          showCustomAlert("Sesi login telah berakhir karena lama tidak aktif. Silakan login kembali.", "Sesi Berakhir", "🔒");
+        }
       }
     }
 
@@ -521,6 +561,7 @@
 
         localStorage.setItem('activeLoggedInUser', found.username);
         localStorage.setItem('activeLoggedInRole', assignedRole);
+        localStorage.setItem('lastSessionActive', Date.now()); // Catat waktu login awal
         errEl.classList.add('hidden');
         checkAuth();
       } else {
@@ -531,6 +572,7 @@
     function handleLogout() {
       localStorage.removeItem('activeLoggedInUser');
       localStorage.removeItem('activeLoggedInRole');
+      localStorage.removeItem('lastSessionActive');
       location.reload();
     }
 
@@ -778,7 +820,6 @@
       });
     }
 
-    // Mengubah Gaji Harian & Uang Makan sesuai pilihan Status
     function handleStatusChange() {
       const statusVal = document.getElementById('inStatus').value;
       const inGaji = document.getElementById('inGajiHarian');
@@ -996,6 +1037,13 @@
         btn.innerText = "Simpan Absensi";
       }
     }
+
+    // Pengecekan interval otomatis setiap 1 menit saat tab terbuka
+    setInterval(() => {
+      if (checkSessionExpired()) {
+        checkAuth();
+      }
+    }, 60000);
 
     window.onload = checkAuth;
   </script>
