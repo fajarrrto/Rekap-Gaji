@@ -2,9 +2,12 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard Rekap Gaji & Presensi</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4338ca">
   <style>
     body { font-family: 'Inter', sans-serif; }
   </style>
@@ -125,23 +128,23 @@
   <!-- ================= MODAL KELOLA ADMIN & AKUN LOGIN ================= -->
   <div id="adminModal" class="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-100 overflow-hidden">
-      <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-indigo-50">
-        <h3 class="font-bold text-indigo-900 text-base flex items-center gap-2">
+      <div class="p-4 sm:p-5 border-b border-slate-100 flex justify-between items-center bg-indigo-50">
+        <h3 class="font-bold text-indigo-900 text-sm sm:text-base flex items-center gap-2">
           ⚙️ Kelola Fitur & Akun Pengguna
         </h3>
         <button onclick="toggleAdminModal(false)" class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none">&times;</button>
       </div>
       
-      <div class="p-5 space-y-5 max-h-[75vh] overflow-y-auto text-sm">
+      <div class="p-4 sm:p-5 space-y-4 max-h-[70vh] overflow-y-auto text-sm">
         
         <!-- Manajemen Akun Login Tambahan dengan Fitur Backup Sheet -->
-        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-          <div class="flex justify-between items-center">
+        <div class="p-3 sm:p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+          <div class="flex flex-wrap justify-between items-center gap-2">
             <h4 class="font-semibold text-xs text-slate-700 uppercase tracking-wider">Daftar Akun & Role</h4>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5">
               <span class="text-[11px] text-indigo-600 font-medium" id="totalUserCount">2 Akun</span>
               <button onclick="backupUsersToSheet()" class="text-[10px] bg-emerald-600 hover:bg-emerald-700 text-white px-2 py-1 rounded transition font-semibold shadow-sm">
-                ☁️ Backup ke Sheet
+                ☁️ Backup
               </button>
               <button onclick="restoreUsersFromSheet()" class="text-[10px] bg-slate-200 hover:bg-slate-300 text-slate-700 px-2 py-1 rounded transition font-semibold">
                 📥 Pulihkan
@@ -150,25 +153,25 @@
           </div>
 
           <!-- Form Tambah User -->
-          <div class="grid grid-cols-7 gap-2 pt-1">
-            <input type="text" id="newUsername" placeholder="Username" class="col-span-2 text-xs border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
-            <select id="newUserRole" class="col-span-2 text-xs border border-slate-300 rounded-lg p-2 bg-white focus:ring-2 focus:ring-indigo-500">
+          <div class="grid grid-cols-1 sm:grid-cols-7 gap-2 pt-1">
+            <input type="text" id="newUsername" placeholder="Username" class="sm:col-span-2 text-xs border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
+            <select id="newUserRole" class="sm:col-span-2 text-xs border border-slate-300 rounded-lg p-2 bg-white focus:ring-2 focus:ring-indigo-500">
               <option value="user">User</option>
               <option value="admin">Admin</option>
             </select>
-            <div class="col-span-2 relative">
+            <div class="sm:col-span-2 relative">
               <input type="password" id="newUserPass" placeholder="Password" class="w-full text-xs border border-slate-300 rounded-lg p-2 pr-6 focus:ring-2 focus:ring-indigo-500">
               <button type="button" onclick="togglePassVisibility('newUserPass', this)" class="absolute right-2 top-2 text-slate-400 text-xs">
                 👁️
               </button>
             </div>
-            <button onclick="addUserAccount()" class="col-span-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition">
+            <button onclick="addUserAccount()" class="sm:col-span-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg py-2 sm:py-0 transition">
               + Add
             </button>
           </div>
 
           <!-- Tabel List User -->
-          <div class="border border-slate-200 rounded-lg overflow-hidden max-h-44 overflow-y-auto bg-white">
+          <div class="border border-slate-200 rounded-lg overflow-hidden max-h-40 overflow-y-auto bg-white">
             <table class="w-full text-left text-xs">
               <thead class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
                 <tr>
@@ -185,32 +188,32 @@
         </div>
 
         <!-- Kelola Berbagai Fitur (Feature Flags) -->
-        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2.5">
+        <div class="p-3 sm:p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
           <h4 class="font-semibold text-xs text-slate-700 uppercase tracking-wider">Kelola Fitur Dashboard</h4>
           
-          <label class="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 cursor-pointer">
-            <span class="text-xs text-slate-700 font-medium">Tampilkan Form Tambah Log Presensi</span>
+          <label class="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 cursor-pointer text-xs">
+            <span class="text-slate-700 font-medium">Tampilkan Form Tambah Log Presensi</span>
             <input type="checkbox" id="cfgToggleForm" class="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4">
           </label>
 
-          <label class="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 cursor-pointer">
-            <span class="text-xs text-slate-700 font-medium">Tampilkan Kartu Ringkasan Gaji (KPI)</span>
+          <label class="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 cursor-pointer text-xs">
+            <span class="text-slate-700 font-medium">Tampilkan Kartu Ringkasan Gaji (KPI)</span>
             <input type="checkbox" id="cfgToggleKpi" class="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4">
           </label>
 
-          <label class="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 cursor-pointer">
-            <span class="text-xs text-slate-700 font-medium">Aktifkan Tombol Unduh CSV</span>
+          <label class="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 cursor-pointer text-xs">
+            <span class="text-slate-700 font-medium">Aktifkan Tombol Unduh CSV</span>
             <input type="checkbox" id="cfgToggleExport" class="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4">
           </label>
 
-          <label class="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 cursor-pointer">
-            <span class="text-xs text-slate-700 font-medium">Izinkan Role User Biasa Mengunduh CSV</span>
+          <label class="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 cursor-pointer text-xs">
+            <span class="text-slate-700 font-medium">Izinkan Role User Biasa Mengunduh CSV</span>
             <input type="checkbox" id="cfgToggleUserExport" class="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4">
           </label>
         </div>
 
         <!-- Pengaturan Default Tarif -->
-        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+        <div class="p-3 sm:p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
           <h4 class="font-semibold text-xs text-slate-700 uppercase tracking-wider">Tarif Default Gaji</h4>
           <div class="grid grid-cols-2 gap-2">
             <div>
@@ -236,7 +239,7 @@
 
       </div>
 
-      <div class="p-4 bg-slate-100 flex justify-end border-t border-slate-200">
+      <div class="p-3 sm:p-4 bg-slate-100 flex justify-end border-t border-slate-200">
         <button onclick="saveAdminSettings()" class="px-5 py-2 text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow">
           Simpan Semua Pengaturan
         </button>
@@ -247,71 +250,75 @@
   <!-- ================= KONTEN DASHBOARD ================= -->
   <div id="dashboardApp" class="hidden min-h-screen pb-12">
     <header class="bg-indigo-700 text-white shadow-md sticky top-0 z-30">
-      <div class="max-w-7xl mx-auto px-4 py-3.5 flex flex-wrap justify-between items-center gap-3">
+      <div class="max-w-7xl mx-auto px-3 sm:px-4 py-3 flex flex-wrap justify-between items-center gap-2">
         <div class="flex items-center space-x-2">
-          <span class="text-xl font-bold tracking-tight">💼 Rekap Gaji & Presensi</span>
-          <span id="activeUserBadge" class="text-xs px-2 py-0.5 rounded font-medium"></span>
+          <span class="text-base sm:text-xl font-bold tracking-tight">💼 Rekap Gaji</span>
+          <span id="activeUserBadge" class="text-[10px] sm:text-xs px-2 py-0.5 rounded font-medium"></span>
         </div>
-        <div class="flex items-center space-x-3">
-          <div class="flex items-center space-x-2">
-            <label for="monthSelect" class="text-xs text-indigo-200">Bulan:</label>
-            <select id="monthSelect" onchange="loadMonthData()" class="bg-indigo-800 text-white text-sm font-medium rounded-lg px-3 py-1.5 border border-indigo-500 focus:outline-none focus:ring-2 focus:ring-white">
+        <div class="flex items-center space-x-1.5 sm:space-x-3">
+          <div class="flex items-center space-x-1">
+            <label for="monthSelect" class="text-xs text-indigo-200 hidden sm:inline">Bulan:</label>
+            <select id="monthSelect" onchange="loadMonthData()" class="bg-indigo-800 text-white text-xs sm:text-sm font-medium rounded-lg px-2 sm:px-3 py-1.5 border border-indigo-500 focus:outline-none">
               <option>Memuat...</option>
             </select>
           </div>
-          <button id="btnAdminManage" onclick="toggleAdminModal(true)" class="bg-indigo-800/90 hover:bg-indigo-900 text-xs px-3 py-1.5 rounded-lg text-indigo-100 hover:text-white transition flex items-center gap-1 hidden">
-            ⚙️ Kelola Fitur
+          <!-- Tombol Install PWA (Otomatis Muncul di HP/PC yang Mendukung) -->
+          <button id="btnInstallApp" onclick="installPwaApp()" class="bg-emerald-600 hover:bg-emerald-700 text-xs px-2.5 py-1.5 rounded-lg text-white transition flex items-center gap-1 hidden font-medium">
+            📱 Install
           </button>
-          <button onclick="handleLogout()" class="bg-rose-600 hover:bg-rose-700 text-xs px-3 py-1.5 rounded-lg text-white transition">
+          <button id="btnAdminManage" onclick="toggleAdminModal(true)" class="bg-indigo-800/90 hover:bg-indigo-900 text-xs px-2.5 sm:px-3 py-1.5 rounded-lg text-indigo-100 hover:text-white transition flex items-center gap-1 hidden">
+            ⚙️ <span class="hidden sm:inline">Kelola Fitur</span>
+          </button>
+          <button onclick="handleLogout()" class="bg-rose-600 hover:bg-rose-700 text-xs px-2.5 sm:px-3 py-1.5 rounded-lg text-white transition font-medium">
             Logout
           </button>
         </div>
       </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 mt-6 space-y-6">
+    <main class="max-w-7xl mx-auto px-3 sm:px-4 mt-4 sm:mt-6 space-y-4 sm:space-y-6">
 
       <!-- KPI Summary Cards -->
-      <section id="kpiContainer" class="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-          <p class="text-xs font-semibold uppercase text-slate-500 tracking-wider">Kehadiran</p>
-          <h3 id="statHari" class="text-2xl font-bold text-slate-900 mt-1">-</h3>
-          <span class="text-xs text-emerald-600 font-medium">Hari Masuk</span>
+      <section id="kpiContainer" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+        <div class="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-sm">
+          <p class="text-[10px] sm:text-xs font-semibold uppercase text-slate-500 tracking-wider">Kehadiran</p>
+          <h3 id="statHari" class="text-lg sm:text-2xl font-bold text-slate-900 mt-1">-</h3>
+          <span class="text-[10px] sm:text-xs text-emerald-600 font-medium">Hari Masuk</span>
         </div>
 
-        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-          <p class="text-xs font-semibold uppercase text-slate-500 tracking-wider">Uang Makan</p>
-          <h3 id="statMakan" class="text-2xl font-bold text-slate-900 mt-1">Rp0</h3>
-          <span class="text-xs text-slate-500">Akumulasi</span>
+        <div class="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-sm">
+          <p class="text-[10px] sm:text-xs font-semibold uppercase text-slate-500 tracking-wider">Uang Makan</p>
+          <h3 id="statMakan" class="text-lg sm:text-2xl font-bold text-slate-900 mt-1">Rp0</h3>
+          <span class="text-[10px] sm:text-xs text-slate-500">Akumulasi</span>
         </div>
 
-        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-          <p class="text-xs font-semibold uppercase text-slate-500 tracking-wider">Gaji Harian</p>
-          <h3 id="statGajiHarian" class="text-2xl font-bold text-slate-900 mt-1">Rp0</h3>
-          <span class="text-xs text-slate-500">Akumulasi</span>
+        <div class="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-sm">
+          <p class="text-[10px] sm:text-xs font-semibold uppercase text-slate-500 tracking-wider">Gaji Harian</p>
+          <h3 id="statGajiHarian" class="text-lg sm:text-2xl font-bold text-slate-900 mt-1">Rp0</h3>
+          <span class="text-[10px] sm:text-xs text-slate-500">Akumulasi</span>
         </div>
 
-        <div id="cardGapok" class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-          <p class="text-xs font-semibold uppercase text-slate-500 tracking-wider">Gaji Pokok</p>
-          <h3 id="statGapok" class="text-2xl font-bold text-slate-900 mt-1">Rp3.500.000</h3>
-          <span class="text-xs text-emerald-600 font-medium">Tetap Bulanan</span>
+        <div id="cardGapok" class="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 shadow-sm">
+          <p class="text-[10px] sm:text-xs font-semibold uppercase text-slate-500 tracking-wider">Gaji Pokok</p>
+          <h3 id="statGapok" class="text-lg sm:text-2xl font-bold text-slate-900 mt-1">Rp3.500.000</h3>
+          <span class="text-[10px] sm:text-xs text-emerald-600 font-medium">Tetap Bulanan</span>
         </div>
 
-        <div class="bg-white p-4 rounded-xl border border-indigo-100 shadow-sm bg-gradient-to-br from-indigo-50/50 to-white">
-          <p class="text-xs font-semibold uppercase text-indigo-700 tracking-wider">Take Home Pay</p>
-          <h3 id="statTHP" class="text-2xl font-bold text-indigo-700 mt-1">Rp3.495.000</h3>
-          <span id="statKetAdmin" class="text-xs text-slate-400">Setelah Admin Rp5.000</span>
+        <div class="bg-white p-3 sm:p-4 rounded-xl border border-indigo-100 shadow-sm bg-gradient-to-br from-indigo-50/50 to-white col-span-2 sm:col-span-1">
+          <p class="text-[10px] sm:text-xs font-semibold uppercase text-indigo-700 tracking-wider">Take Home Pay</p>
+          <h3 id="statTHP" class="text-lg sm:text-2xl font-bold text-indigo-700 mt-1">Rp3.495.000</h3>
+          <span id="statKetAdmin" class="text-[10px] sm:text-xs text-slate-400">Setelah Admin Rp5.000</span>
         </div>
       </section>
 
       <!-- Form & Table Container -->
-      <div id="contentGrid" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div id="contentGrid" class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
 
         <!-- Form Tambah Presensi -->
-        <div id="wrapperFormEntry" class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm lg:col-span-1 h-fit">
-          <h2 class="text-base font-bold text-slate-900 mb-4 pb-2 border-b border-slate-100">Tambah Log Kehadiran</h2>
+        <div id="wrapperFormEntry" class="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm lg:col-span-1 h-fit">
+          <h2 class="text-sm sm:text-base font-bold text-slate-900 mb-3 sm:mb-4 pb-2 border-b border-slate-100">Tambah Log Kehadiran</h2>
           
-          <form id="entryForm" onsubmit="submitEntry(event)" class="space-y-4">
+          <form id="entryForm" onsubmit="submitEntry(event)" class="space-y-3 sm:space-y-4">
             <div>
               <label class="block text-xs font-medium text-slate-600 mb-1">Pilih Tanggal</label>
               <input type="date" id="inTanggalPicker" required class="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-slate-50">
@@ -334,11 +341,11 @@
 
             <div class="grid grid-cols-2 gap-2">
               <div>
-                <label class="block text-xs font-medium text-slate-600 mb-1">Gaji Harian (Default)</label>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Gaji Harian</label>
                 <input type="number" id="inGajiHarian" readonly class="w-full text-sm border border-slate-200 bg-slate-100 text-slate-600 font-semibold rounded-lg px-3 py-2 cursor-not-allowed">
               </div>
               <div>
-                <label class="block text-xs font-medium text-slate-600 mb-1">Uang Makan (Default)</label>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Uang Makan</label>
                 <input type="number" id="inUangMakan" readonly class="w-full text-sm border border-slate-200 bg-slate-100 text-slate-600 font-semibold rounded-lg px-3 py-2 cursor-not-allowed">
               </div>
             </div>
@@ -351,10 +358,10 @@
 
         <!-- Riwayat Presensi -->
         <div id="wrapperTableSection" class="bg-white rounded-xl border border-slate-200 shadow-sm lg:col-span-2 overflow-hidden flex flex-col">
-          <div class="p-4 border-b border-slate-100 flex flex-wrap justify-between items-center gap-2">
+          <div class="p-3 sm:p-4 border-b border-slate-100 flex flex-wrap justify-between items-center gap-2">
             <div class="flex items-center gap-2">
-              <h2 class="text-base font-bold text-slate-900">Rincian Hari Kerja</h2>
-              <span id="labelSheet" class="text-xs font-medium text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full">Sheet Aktif</span>
+              <h2 class="text-sm sm:text-base font-bold text-slate-900">Rincian Hari Kerja</h2>
+              <span id="labelSheet" class="text-[10px] sm:text-xs font-medium text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full">Sheet Aktif</span>
             </div>
             
             <button id="btnExportCsv" onclick="exportToCsv()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-300 transition flex items-center gap-1.5 hidden">
@@ -363,15 +370,15 @@
           </div>
 
           <div class="overflow-x-auto flex-1">
-            <table class="w-full text-left text-sm">
-              <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 text-xs uppercase font-medium">
+            <table class="w-full text-left text-xs sm:text-sm">
+              <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase font-medium text-[10px] sm:text-xs">
                 <tr>
-                  <th class="py-3 px-3">Tanggal</th>
-                  <th class="py-3 px-2">Ke-</th>
-                  <th class="py-3 px-2">Status</th>
-                  <th class="py-3 px-3 text-right">Gaji Harian</th>
-                  <th class="py-3 px-3 text-right">Uang Makan</th>
-                  <th class="py-3 px-3 text-right">Total Harian</th>
+                  <th class="py-2.5 px-3">Tanggal</th>
+                  <th class="py-2.5 px-2">Ke-</th>
+                  <th class="py-2.5 px-2">Status</th>
+                  <th class="py-2.5 px-3 text-right">Gaji Harian</th>
+                  <th class="py-2.5 px-3 text-right">Uang Makan</th>
+                  <th class="py-2.5 px-3 text-right">Total Harian</th>
                 </tr>
               </thead>
               <tbody id="tableBody" class="divide-y divide-slate-100">
@@ -389,6 +396,30 @@
 
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMtUp7Dea6wtdsO-95uK2sL56ZSFasCweNOFoigfbjjmqsfApBKrlTTxDHn--_YgKi/exec";
+
+    // ================= LOGIKA PWA INSTALL PROMPT =================
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const btnInstall = document.getElementById('btnInstallApp');
+      if (btnInstall) btnInstall.classList.remove('hidden');
+    });
+
+    function installPwaApp() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('Pengguna menerima instalasi PWA');
+          }
+          deferredPrompt = null;
+          document.getElementById('btnInstallApp').classList.add('hidden');
+        });
+      } else {
+        showCustomAlert("Aplikasi sudah terinstal di perangkat Anda atau browser belum mendukung install langsung. Anda juga bisa menggunakan menu browser > 'Tambahkan ke Layar Utama'.", "Informasi Install", "📱");
+      }
+    }
 
     const SESSION_TIMEOUT_MS = 30 * 60 * 1000; 
 
@@ -659,7 +690,6 @@
       document.getElementById('totalUserCount').innerText = userAccounts.length + " Akun";
     }
 
-    // ================= FITUR BACKUP & RESTORE KE SHEET =================
     async function backupUsersToSheet() {
       showCustomAlert("Menyimpan cadangan akun ke Google Sheet...", "Memproses", "⏳");
       try {
@@ -966,13 +996,13 @@
 
         if (isPeriodGapok) {
           cardGapok.classList.remove('hidden');
-          kpiContainer.className = "grid grid-cols-2 lg:grid-cols-5 gap-4";
+          kpiContainer.className = "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4";
           gajiPokokVal = currentSettings.gajiPokok;
           adminFee = currentSettings.adminFee;
           document.getElementById('statGapok').innerText = idr(gajiPokokVal);
         } else {
           cardGapok.classList.add('hidden');
-          kpiContainer.className = "grid grid-cols-2 lg:grid-cols-4 gap-4";
+          kpiContainer.className = "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4";
           adminFee = 2500;
         }
 
@@ -1020,14 +1050,14 @@
           if (String(r.status).toLowerCase() === 'sakit') badgeColor = "bg-rose-100 text-rose-800";
 
           tr.innerHTML = `
-            <td class="py-3 px-3 font-medium ${isFilled ? 'text-slate-900' : 'text-slate-400'}">${formatTgl(r.tanggal)}</td>
-            <td class="py-3 px-2 text-slate-600">${r.hariKe}</td>
-            <td class="py-3 px-2">
+            <td class="py-2.5 px-3 font-medium ${isFilled ? 'text-slate-900' : 'text-slate-400'}">${formatTgl(r.tanggal)}</td>
+            <td class="py-2.5 px-2 text-slate-600">${r.hariKe}</td>
+            <td class="py-2.5 px-2">
               ${isFilled ? `<span class="px-2 py-0.5 text-xs font-semibold rounded ${badgeColor}">${r.status}</span>` : `<span class="px-2 py-0.5 text-xs rounded bg-slate-200 text-slate-600">-</span>`}
             </td>
-            <td class="py-3 px-3 text-right text-slate-600">${idr(r.gajiHarian)}</td>
-            <td class="py-3 px-3 text-right text-slate-600">${idr(r.uangMakan)}</td>
-            <td class="py-3 px-3 text-right font-medium ${isFilled ? 'text-slate-900' : 'text-slate-400'}">${idr(r.totalGaji)}</td>
+            <td class="py-2.5 px-3 text-right text-slate-600">${idr(r.gajiHarian)}</td>
+            <td class="py-2.5 px-3 text-right text-slate-600">${idr(r.uangMakan)}</td>
+            <td class="py-2.5 px-3 text-right font-medium ${isFilled ? 'text-slate-900' : 'text-slate-400'}">${idr(r.totalGaji)}</td>
           `;
           tbody.appendChild(tr);
         });
