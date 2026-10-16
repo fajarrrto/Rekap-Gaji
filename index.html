@@ -3,11 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Rekap Gaji & Presensi</title>
+  <title>Rekap Gaji & Presensi</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4338ca">
+  
+  <!-- Favicon / Logo Tab Browser Modern -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%234F46E5'/%3E%3Cstop offset='100%25' stop-color='%23312E81'/%3E%3C/linearGradient%3E%3ClinearGradient id='gold' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23FDE047'/%3E%3Cstop offset='100%25' stop-color='%23EAB308'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='110' fill='url(%23bg)'/%3E%3Crect x='106' y='170' width='300' height='210' rx='36' fill='%23ffffff' fill-opacity='0.15' stroke='%23ffffff' stroke-width='16'/%3E%3Cpath d='M196 170V136a60 60 0 0 1 120 0v34' fill='none' stroke='%23ffffff' stroke-width='18' stroke-linecap='round'/%3E%3Ccircle cx='256' cy='275' r='38' fill='url(%23gold)'/%3E%3Cpath d='M256 250v50M244 262h24' stroke='%231E1B4B' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E">
+  
+  <!-- Apple Touch Icon untuk Safari / iOS -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%234F46E5'/%3E%3Cstop offset='100%25' stop-color='%23312E81'/%3E%3C/linearGradient%3E%3ClinearGradient id='gold' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23FDE047'/%3E%3Cstop offset='100%25' stop-color='%23EAB308'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='110' fill='url(%23bg)'/%3E%3Crect x='106' y='170' width='300' height='210' rx='36' fill='%23ffffff' fill-opacity='0.15' stroke='%23ffffff' stroke-width='16'/%3E%3Cpath d='M196 170V136a60 60 0 0 1 120 0v34' fill='none' stroke='%23ffffff' stroke-width='18' stroke-linecap='round'/%3E%3Ccircle cx='256' cy='275' r='38' fill='url(%23gold)'/%3E%3Cpath d='M256 250v50M244 262h24' stroke='%231E1B4B' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E">
+
   <style>
     body { font-family: 'Inter', sans-serif; }
   </style>
@@ -17,11 +24,17 @@
   <!-- ================= LAYAR LOGIN ================= -->
   <div id="loginScreen" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 max-w-sm w-full p-6 space-y-5">
-      <div class="text-center space-y-1">
-        <div class="w-12 h-12 bg-indigo-100 text-indigo-700 rounded-xl flex items-center justify-center mx-auto text-2xl font-bold">
-          💼
+      <div class="text-center space-y-2">
+        <!-- Logo Login SVG -->
+        <div class="w-16 h-16 mx-auto rounded-2xl shadow-md overflow-hidden flex items-center justify-center bg-indigo-600 p-2">
+          <svg class="w-full h-full" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="96" y="160" width="320" height="230" rx="36" fill="white" fill-opacity="0.2" stroke="white" stroke-width="20"/>
+            <path d="M186 160V126a70 70 0 0 1 140 0v34" stroke="white" stroke-width="20" stroke-linecap="round"/>
+            <circle cx="256" cy="275" r="42" fill="#FDE047"/>
+            <path d="M256 250v50M242 262h28" stroke="#1E1B4B" stroke-width="8" stroke-linecap="round"/>
+          </svg>
         </div>
-        <h2 class="text-xl font-bold text-slate-900 pt-2">Portal Rekap Gaji</h2>
+        <h2 class="text-xl font-bold text-slate-900">Portal Rekap Gaji</h2>
         <p class="text-xs text-slate-500">Silakan login dengan Akun Anda</p>
       </div>
 
@@ -251,24 +264,33 @@
   <div id="dashboardApp" class="hidden min-h-screen pb-12">
     <header class="bg-indigo-700 text-white shadow-md sticky top-0 z-30">
       <div class="max-w-7xl mx-auto px-3 sm:px-4 py-3 flex flex-wrap justify-between items-center gap-2">
-        <div class="flex items-center space-x-2">
-          <span class="text-base sm:text-xl font-bold tracking-tight">💼 Rekap Gaji</span>
+        <div class="flex items-center space-x-2.5">
+          <!-- Logo Header SVG -->
+          <div class="w-8 h-8 rounded-lg bg-indigo-800 border border-indigo-500/50 flex items-center justify-center p-1.5 shadow-sm">
+            <svg class="w-full h-full" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="96" y="160" width="320" height="230" rx="36" fill="white" fill-opacity="0.25" stroke="white" stroke-width="22"/>
+              <path d="M186 160V126a70 70 0 0 1 140 0v34" stroke="white" stroke-width="22" stroke-linecap="round"/>
+              <circle cx="256" cy="275" r="42" fill="#FDE047"/>
+              <path d="M256 250v50M242 262h28" stroke="#1E1B4B" stroke-width="9" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span class="text-base sm:text-lg font-bold tracking-tight">Rekap Gaji</span>
           <span id="activeUserBadge" class="text-[10px] sm:text-xs px-2 py-0.5 rounded font-medium"></span>
         </div>
         
         <div class="flex items-center space-x-1.5 sm:space-x-2">
-          <!-- Dropdown Pilihan Tahun (2026 / 2027) -->
+          <!-- 1. BULAN DULU -->
+          <div class="flex items-center space-x-1">
+            <select id="monthSelect" onchange="loadMonthData()" class="bg-indigo-800 text-white text-xs sm:text-sm font-medium rounded-lg px-2.5 sm:px-3 py-1.5 border border-indigo-500 focus:outline-none">
+              <option>Memuat...</option>
+            </select>
+          </div>
+
+          <!-- 2. BARU TAHUN -->
           <div class="flex items-center space-x-1">
             <select id="yearSelect" onchange="handleYearChange()" class="bg-indigo-900 text-amber-300 text-xs sm:text-sm font-bold rounded-lg px-2 sm:px-2.5 py-1.5 border border-indigo-500 focus:outline-none">
               <option value="2026">2026</option>
               <option value="2027">2027</option>
-            </select>
-          </div>
-
-          <!-- Dropdown Bulan -->
-          <div class="flex items-center space-x-1">
-            <select id="monthSelect" onchange="loadMonthData()" class="bg-indigo-800 text-white text-xs sm:text-sm font-medium rounded-lg px-2 sm:px-3 py-1.5 border border-indigo-500 focus:outline-none">
-              <option>Memuat...</option>
             </select>
           </div>
 
@@ -1005,7 +1027,6 @@
         let hitungMakan = 0;
         let hitungGaji = 0;
 
-        // Tahun 2027 SELALU Gaji Pokok (Rp3.500.000), 2026 mulai dari September
         const isPeriodGapok = (year === "2027") || /september|oktober|november|desember/i.test(month);
         const cardGapok = document.getElementById('cardGapok');
         const kpiContainer = document.getElementById('kpiContainer');
@@ -1074,9 +1095,9 @@
             <td class="py-2.5 px-2">
               ${isFilled ? `<span class="px-2 py-0.5 text-xs font-semibold rounded ${badgeColor}">${r.status}</span>` : `<span class="px-2 py-0.5 text-xs rounded bg-slate-200 text-slate-600">-</span>`}
             </td>
-            <td class="py-2.5 px-3 text-right text-slate-600">${idr(r.gajiHarian)}</td>
-            <td class="py-2.5 px-3 text-right text-slate-600">${idr(r.uangMakan)}</td>
-            <td class="py-2.5 px-3 text-right font-medium ${isFilled ? 'text-slate-900' : 'text-slate-400'}">${idr(r.totalGaji)}</td>
+            <td class="py-3 px-3 text-right text-slate-600">${idr(r.gajiHarian)}</td>
+            <td class="py-3 px-3 text-right text-slate-600">${idr(r.uangMakan)}</td>
+            <td class="py-3 px-3 text-right font-medium ${isFilled ? 'text-slate-900' : 'text-slate-400'}">${idr(r.totalGaji)}</td>
           `;
           tbody.appendChild(tr);
         });
