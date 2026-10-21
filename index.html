@@ -15,6 +15,13 @@
 
   <style>
     body { font-family: 'Inter', sans-serif; }
+    @keyframes spin-custom {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .animate-spin-once {
+      animation: spin-custom 0.6s linear;
+    }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
@@ -285,6 +292,13 @@
             </select>
           </div>
 
+          <!-- 3. TOMBOL SINKRONISASI SHEET -->
+          <button id="btnSyncSheet" onclick="triggerManualSync()" title="Sinkronkan dengan Google Sheets" class="bg-indigo-800/90 hover:bg-indigo-900 text-xs px-2.5 sm:px-3 py-1.5 rounded-lg text-indigo-100 hover:text-white transition flex items-center gap-1 font-medium border border-indigo-500/50">
+            <span id="syncIcon" class="inline-block transition-transform duration-500">🔄</span>
+            <span class="hidden sm:inline">Sync</span>
+          </button>
+
+          <!-- Tombol Install PWA -->
           <button id="btnInstallApp" onclick="installPwaApp()" class="bg-emerald-600 hover:bg-emerald-700 text-xs px-2.5 py-1.5 rounded-lg text-white transition flex items-center gap-1 hidden font-medium">
             📱 Install
           </button>
@@ -421,38 +435,19 @@
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMtUp7Dea6wtdsO-95uK2sL56ZSFasCweNOFoigfbjjmqsfApBKrlTTxDHn--_YgKi/exec";
 
-    // ================= PENGATURAN WAJIB LOGIN (ANTI-PERSISTENT & FAST TIMEOUT) =================
-    // 30 detik idle / tanpa interaksi -> otomatis minta login ulang
-    const IDLE_TIMEOUT_MS = 30 * 1000; 
+    // ================= LOGIKA AUTO-LOGOUT SETIAP KALI REFRESH =================
+    // Pastikan sesi aktif langsung terhapus saat halaman di-reload / di-close
+    window.addEventListener('beforeunload', () => {
+      sessionStorage.removeItem('activeLoggedInUser');
+      sessionStorage.removeItem('activeLoggedInRole');
+    });
 
-    // Bersihkan sesi aktif lama dari localStorage agar tidak auto-login setelah refresh
+    // Bersihkan sesi lama dari localStorage untuk mencegah bypass auto-login
     localStorage.removeItem('activeLoggedInUser');
     localStorage.removeItem('activeLoggedInRole');
     localStorage.removeItem('lastSessionActive');
 
-    let idleTimer = null;
-
-    function resetIdleTimer() {
-      if (sessionStorage.getItem('activeLoggedInUser')) {
-        if (idleTimer) clearTimeout(idleTimer);
-        idleTimer = setTimeout(() => {
-          handleAutoLogoutDueToInactivity();
-        }, IDLE_TIMEOUT_MS);
-      }
-    }
-
-    function handleAutoLogoutDueToInactivity() {
-      sessionStorage.removeItem('activeLoggedInUser');
-      sessionStorage.removeItem('activeLoggedInRole');
-      checkAuth();
-      showCustomAlert("Waktu sesi Anda habis. Silakan login kembali.", "Sesi Berakhir", "🔒");
-    }
-
-    // Dengarkan aktivitas pengguna untuk me-reset timer idle
-    ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(evt => {
-      window.addEventListener(evt, resetIdleTimer, { passive: true });
-    });
-
+    // ================= PWA INSTALL PROMPT =================
     let deferredPrompt = null;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
@@ -476,6 +471,7 @@
       }
     }
 
+    // Akun Pengguna
     let userAccounts = JSON.parse(localStorage.getItem('app_user_accounts')) || [];
 
     function ensureAccounts() {
@@ -564,7 +560,7 @@
     }
 
     function checkAuth() {
-      // Sesi hanya dicek dari sessionStorage yang terhapus setiap kali refresh
+      // Hanya mengandalkan sessionStorage sementara (selalu null saat fresh load / refresh)
       const activeUser = sessionStorage.getItem('activeLoggedInUser');
       let activeRole = sessionStorage.getItem('activeLoggedInRole') || "user";
 
@@ -576,7 +572,6 @@
       currentUserRole = activeRole;
 
       if (activeUser) {
-        resetIdleTimer();
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('dashboardApp').classList.remove('hidden');
 
@@ -596,8 +591,7 @@
         applyFeatureSettings();
         initDashboard();
       } else {
-        // Mode wajib login: Tampilkan form login, sembunyikan dashboard
-        if (idleTimer) clearTimeout(idleTimer);
+        // Tampilkan layar login saat buka pertama kali maupun setelah refresh
         document.getElementById('loginScreen').classList.remove('hidden');
         document.getElementById('dashboardApp').classList.add('hidden');
       }
@@ -617,7 +611,6 @@
           ? 'admin' 
           : (found.role || 'user');
 
-        // Simpan sesi login hanya di sessionStorage
         sessionStorage.setItem('activeLoggedInUser', found.username);
         sessionStorage.setItem('activeLoggedInRole', assignedRole);
         errEl.classList.add('hidden');
@@ -630,8 +623,26 @@
     function handleLogout() {
       sessionStorage.removeItem('activeLoggedInUser');
       sessionStorage.removeItem('activeLoggedInRole');
-      if (idleTimer) clearTimeout(idleTimer);
       location.reload();
+    }
+
+    // ================= FITUR SINKRONISASI MANUAL DENGAN GOOGLE SHEETS =================
+    async function triggerManualSync() {
+      const icon = document.getElementById('syncIcon');
+      icon.classList.add('animate-spin-once');
+      
+      showCustomAlert("Menyinkronkan data dengan Google Sheets...", "Sinkronisasi", "🔄");
+
+      try {
+        await loadMonthData();
+        showCustomAlert("Data berhasil disinkronkan dengan Google Sheets!", "Sinkron Sukses", "✅");
+      } catch (err) {
+        showCustomAlert("Gagal menyinkronkan data: " + err.message, "Gagal", "❌");
+      } finally {
+        setTimeout(() => {
+          icon.classList.remove('animate-spin-once');
+        }, 600);
+      }
     }
 
     function applyFeatureSettings() {
@@ -769,7 +780,7 @@
       document.getElementById('newUsername').value = '';
       document.getElementById('newUserPass').value = '';
       renderUserTable();
-      showCustomAlert("Akun baru berhasil ditambahkan! Jangan lupa klik 'Backup ke Sheet'.", "Sukses", "✅");
+      showCustomAlert("Akun baru berhasil ditambahkan! Silakan lakukan Backup ke Sheet.", "Sukses", "✅");
     }
 
     function openEditModal(index) {
@@ -995,7 +1006,7 @@
         });
 
         sel.selectedIndex = matchedIndex;
-        loadMonthData();
+        await loadMonthData();
       } catch (err) {
         showCustomAlert("Gagal memuat daftar bulan: " + err.message, "Error Koneksi", "❌");
       }
@@ -1087,9 +1098,9 @@
             <td class="py-2.5 px-2">
               ${isFilled ? `<span class="px-2 py-0.5 text-xs font-semibold rounded ${badgeColor}">${r.status}</span>` : `<span class="px-2 py-0.5 text-xs rounded bg-slate-200 text-slate-600">-</span>`}
             </td>
-            <td class="py-3 px-3 text-right text-slate-600">${idr(r.gajiHarian)}</td>
-            <td class="py-3 px-3 text-right text-slate-600">${idr(r.uangMakan)}</td>
-            <td class="py-3 px-3 text-right font-medium ${isFilled ? 'text-slate-900' : 'text-slate-400'}">${idr(r.totalGaji)}</td>
+            <td class="py-2.5 px-3 text-right text-slate-600">${idr(r.gajiHarian)}</td>
+            <td class="py-2.5 px-3 text-right text-slate-600">${idr(r.uangMakan)}</td>
+            <td class="py-2.5 px-3 text-right font-medium ${isFilled ? 'text-slate-900' : 'text-slate-400'}">${idr(r.totalGaji)}</td>
           `;
           tbody.appendChild(tr);
         });
@@ -1098,6 +1109,7 @@
 
       } catch (err) {
         tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-red-500">Gagal menarik data: ${err.message}</td></tr>`;
+        throw err;
       }
     }
 
@@ -1141,6 +1153,7 @@
       }
     }
 
+    // Jalankan verifikasi status auth saat dokumen selesai dimuat
     window.onload = checkAuth;
   </script>
 </body>
