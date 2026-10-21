@@ -436,13 +436,11 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMtUp7Dea6wtdsO-95uK2sL56ZSFasCweNOFoigfbjjmqsfApBKrlTTxDHn--_YgKi/exec";
 
     // ================= LOGIKA AUTO-LOGOUT SETIAP KALI REFRESH =================
-    // Pastikan sesi aktif langsung terhapus saat halaman di-reload / di-close
     window.addEventListener('beforeunload', () => {
       sessionStorage.removeItem('activeLoggedInUser');
       sessionStorage.removeItem('activeLoggedInRole');
     });
 
-    // Bersihkan sesi lama dari localStorage untuk mencegah bypass auto-login
     localStorage.removeItem('activeLoggedInUser');
     localStorage.removeItem('activeLoggedInRole');
     localStorage.removeItem('lastSessionActive');
@@ -560,7 +558,6 @@
     }
 
     function checkAuth() {
-      // Hanya mengandalkan sessionStorage sementara (selalu null saat fresh load / refresh)
       const activeUser = sessionStorage.getItem('activeLoggedInUser');
       let activeRole = sessionStorage.getItem('activeLoggedInRole') || "user";
 
@@ -591,7 +588,6 @@
         applyFeatureSettings();
         initDashboard();
       } else {
-        // Tampilkan layar login saat buka pertama kali maupun setelah refresh
         document.getElementById('loginScreen').classList.remove('hidden');
         document.getElementById('dashboardApp').classList.add('hidden');
       }
@@ -1098,9 +1094,9 @@
             <td class="py-2.5 px-2">
               ${isFilled ? `<span class="px-2 py-0.5 text-xs font-semibold rounded ${badgeColor}">${r.status}</span>` : `<span class="px-2 py-0.5 text-xs rounded bg-slate-200 text-slate-600">-</span>`}
             </td>
-            <td class="py-2.5 px-3 text-right text-slate-600">${idr(r.gajiHarian)}</td>
-            <td class="py-2.5 px-3 text-right text-slate-600">${idr(r.uangMakan)}</td>
-            <td class="py-2.5 px-3 text-right font-medium ${isFilled ? 'text-slate-900' : 'text-slate-400'}">${idr(r.totalGaji)}</td>
+            <td class="py-3 px-3 text-right text-slate-600">${idr(r.gajiHarian)}</td>
+            <td class="py-3 px-3 text-right text-slate-600">${idr(r.uangMakan)}</td>
+            <td class="py-3 px-3 text-right font-medium ${isFilled ? 'text-slate-900' : 'text-slate-400'}">${idr(r.totalGaji)}</td>
           `;
           tbody.appendChild(tr);
         });
@@ -1153,7 +1149,18 @@
       }
     }
 
-    // Jalankan verifikasi status auth saat dokumen selesai dimuat
+    // Registrasi Service Worker untuk mengaktifkan install PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').then((reg) => {
+          console.log('Service Worker terdaftar:', reg.scope);
+        }).catch((err) => {
+          console.log('Registrasi Service Worker gagal:', err);
+        });
+      });
+    }
+
+    // Jalankan pengecekan status autentikasi saat web dimuat
     window.onload = checkAuth;
   </script>
 </body>
