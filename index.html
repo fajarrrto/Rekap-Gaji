@@ -9,10 +9,8 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4338ca">
   
-  <!-- Favicon / Logo Tab Browser Modern -->
+  <!-- Favicon / Logo Modern -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%234F46E5'/%3E%3Cstop offset='100%25' stop-color='%23312E81'/%3E%3C/linearGradient%3E%3ClinearGradient id='gold' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23FDE047'/%3E%3Cstop offset='100%25' stop-color='%23EAB308'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='110' fill='url(%23bg)'/%3E%3Crect x='106' y='170' width='300' height='210' rx='36' fill='%23ffffff' fill-opacity='0.15' stroke='%23ffffff' stroke-width='16'/%3E%3Cpath d='M196 170V136a60 60 0 0 1 120 0v34' fill='none' stroke='%23ffffff' stroke-width='18' stroke-linecap='round'/%3E%3Ccircle cx='256' cy='275' r='38' fill='url(%23gold)'/%3E%3Cpath d='M256 250v50M244 262h24' stroke='%231E1B4B' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E">
-  
-  <!-- Apple Touch Icon untuk Safari / iOS -->
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%234F46E5'/%3E%3Cstop offset='100%25' stop-color='%23312E81'/%3E%3C/linearGradient%3E%3ClinearGradient id='gold' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23FDE047'/%3E%3Cstop offset='100%25' stop-color='%23EAB308'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='110' fill='url(%23bg)'/%3E%3Crect x='106' y='170' width='300' height='210' rx='36' fill='%23ffffff' fill-opacity='0.15' stroke='%23ffffff' stroke-width='16'/%3E%3Cpath d='M196 170V136a60 60 0 0 1 120 0v34' fill='none' stroke='%23ffffff' stroke-width='18' stroke-linecap='round'/%3E%3Ccircle cx='256' cy='275' r='38' fill='url(%23gold)'/%3E%3Cpath d='M256 250v50M244 262h24' stroke='%231E1B4B' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E">
 
   <style>
@@ -25,7 +23,6 @@
   <div id="loginScreen" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 max-w-sm w-full p-6 space-y-5">
       <div class="text-center space-y-2">
-        <!-- Logo Login SVG -->
         <div class="w-16 h-16 mx-auto rounded-2xl shadow-md overflow-hidden flex items-center justify-center bg-indigo-600 p-2">
           <svg class="w-full h-full" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect x="96" y="160" width="320" height="230" rx="36" fill="white" fill-opacity="0.2" stroke="white" stroke-width="20"/>
@@ -35,7 +32,7 @@
           </svg>
         </div>
         <h2 class="text-xl font-bold text-slate-900">Portal Rekap Gaji</h2>
-        <p class="text-xs text-slate-500">Silakan login dengan Akun Anda</p>
+        <p class="text-xs text-slate-500">Silakan login untuk mengakses dashboard</p>
       </div>
 
       <form id="formLogin" onsubmit="handleLogin(event)" class="space-y-4">
@@ -150,7 +147,6 @@
       
       <div class="p-4 sm:p-5 space-y-4 max-h-[70vh] overflow-y-auto text-sm">
         
-        <!-- Manajemen Akun Login Tambahan dengan Fitur Backup Sheet -->
         <div class="p-3 sm:p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
           <div class="flex flex-wrap justify-between items-center gap-2">
             <h4 class="font-semibold text-xs text-slate-700 uppercase tracking-wider">Daftar Akun & Role</h4>
@@ -165,7 +161,6 @@
             </div>
           </div>
 
-          <!-- Form Tambah User -->
           <div class="grid grid-cols-1 sm:grid-cols-7 gap-2 pt-1">
             <input type="text" id="newUsername" placeholder="Username" class="sm:col-span-2 text-xs border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
             <select id="newUserRole" class="sm:col-span-2 text-xs border border-slate-300 rounded-lg p-2 bg-white focus:ring-2 focus:ring-indigo-500">
@@ -183,7 +178,6 @@
             </button>
           </div>
 
-          <!-- Tabel List User -->
           <div class="border border-slate-200 rounded-lg overflow-hidden max-h-40 overflow-y-auto bg-white">
             <table class="w-full text-left text-xs">
               <thead class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
@@ -200,7 +194,6 @@
           </div>
         </div>
 
-        <!-- Kelola Berbagai Fitur (Feature Flags) -->
         <div class="p-3 sm:p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
           <h4 class="font-semibold text-xs text-slate-700 uppercase tracking-wider">Kelola Fitur Dashboard</h4>
           
@@ -225,7 +218,6 @@
           </label>
         </div>
 
-        <!-- Pengaturan Default Tarif -->
         <div class="p-3 sm:p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
           <h4 class="font-semibold text-xs text-slate-700 uppercase tracking-wider">Tarif Default Gaji</h4>
           <div class="grid grid-cols-2 gap-2">
@@ -265,7 +257,6 @@
     <header class="bg-indigo-700 text-white shadow-md sticky top-0 z-30">
       <div class="max-w-7xl mx-auto px-3 sm:px-4 py-3 flex flex-wrap justify-between items-center gap-2">
         <div class="flex items-center space-x-2.5">
-          <!-- Logo Header SVG -->
           <div class="w-8 h-8 rounded-lg bg-indigo-800 border border-indigo-500/50 flex items-center justify-center p-1.5 shadow-sm">
             <svg class="w-full h-full" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect x="96" y="160" width="320" height="230" rx="36" fill="white" fill-opacity="0.25" stroke="white" stroke-width="22"/>
@@ -294,7 +285,6 @@
             </select>
           </div>
 
-          <!-- Tombol Install PWA -->
           <button id="btnInstallApp" onclick="installPwaApp()" class="bg-emerald-600 hover:bg-emerald-700 text-xs px-2.5 py-1.5 rounded-lg text-white transition flex items-center gap-1 hidden font-medium">
             📱 Install
           </button>
@@ -431,6 +421,38 @@
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMtUp7Dea6wtdsO-95uK2sL56ZSFasCweNOFoigfbjjmqsfApBKrlTTxDHn--_YgKi/exec";
 
+    // ================= PENGATURAN WAJIB LOGIN (ANTI-PERSISTENT & FAST TIMEOUT) =================
+    // 30 detik idle / tanpa interaksi -> otomatis minta login ulang
+    const IDLE_TIMEOUT_MS = 30 * 1000; 
+
+    // Bersihkan sesi aktif lama dari localStorage agar tidak auto-login setelah refresh
+    localStorage.removeItem('activeLoggedInUser');
+    localStorage.removeItem('activeLoggedInRole');
+    localStorage.removeItem('lastSessionActive');
+
+    let idleTimer = null;
+
+    function resetIdleTimer() {
+      if (sessionStorage.getItem('activeLoggedInUser')) {
+        if (idleTimer) clearTimeout(idleTimer);
+        idleTimer = setTimeout(() => {
+          handleAutoLogoutDueToInactivity();
+        }, IDLE_TIMEOUT_MS);
+      }
+    }
+
+    function handleAutoLogoutDueToInactivity() {
+      sessionStorage.removeItem('activeLoggedInUser');
+      sessionStorage.removeItem('activeLoggedInRole');
+      checkAuth();
+      showCustomAlert("Waktu sesi Anda habis. Silakan login kembali.", "Sesi Berakhir", "🔒");
+    }
+
+    // Dengarkan aktivitas pengguna untuk me-reset timer idle
+    ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(evt => {
+      window.addEventListener(evt, resetIdleTimer, { passive: true });
+    });
+
     let deferredPrompt = null;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
@@ -453,34 +475,6 @@
         showCustomAlert("Aplikasi sudah terinstal di perangkat Anda atau browser belum mendukung install langsung.", "Informasi Install", "📱");
       }
     }
-
-    const SESSION_TIMEOUT_MS = 30 * 60 * 1000; 
-
-    function updateSessionActivity() {
-      if (localStorage.getItem('activeLoggedInUser')) {
-        localStorage.setItem('lastSessionActive', Date.now());
-      }
-    }
-
-    function checkSessionExpired() {
-      const activeUser = localStorage.getItem('activeLoggedInUser');
-      const lastActive = localStorage.getItem('lastSessionActive');
-
-      if (activeUser && lastActive) {
-        const timeElapsed = Date.now() - Number(lastActive);
-        if (timeElapsed > SESSION_TIMEOUT_MS) {
-          localStorage.removeItem('activeLoggedInUser');
-          localStorage.removeItem('activeLoggedInRole');
-          localStorage.removeItem('lastSessionActive');
-          return true;
-        }
-      }
-      return false;
-    }
-
-    ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(evt => {
-      window.addEventListener(evt, updateSessionActivity, { passive: true });
-    });
 
     let userAccounts = JSON.parse(localStorage.getItem('app_user_accounts')) || [];
 
@@ -570,20 +564,19 @@
     }
 
     function checkAuth() {
-      const isExpired = checkSessionExpired();
-
-      const activeUser = localStorage.getItem('activeLoggedInUser');
-      let activeRole = localStorage.getItem('activeLoggedInRole') || "user";
+      // Sesi hanya dicek dari sessionStorage yang terhapus setiap kali refresh
+      const activeUser = sessionStorage.getItem('activeLoggedInUser');
+      let activeRole = sessionStorage.getItem('activeLoggedInRole') || "user";
 
       if (activeUser && (activeUser.toLowerCase() === 'fajar' || activeUser.toLowerCase() === 'admin')) {
         activeRole = 'admin';
-        localStorage.setItem('activeLoggedInRole', 'admin');
+        sessionStorage.setItem('activeLoggedInRole', 'admin');
       }
 
       currentUserRole = activeRole;
 
-      if (activeUser && !isExpired) {
-        updateSessionActivity();
+      if (activeUser) {
+        resetIdleTimer();
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('dashboardApp').classList.remove('hidden');
 
@@ -603,11 +596,10 @@
         applyFeatureSettings();
         initDashboard();
       } else {
+        // Mode wajib login: Tampilkan form login, sembunyikan dashboard
+        if (idleTimer) clearTimeout(idleTimer);
         document.getElementById('loginScreen').classList.remove('hidden');
         document.getElementById('dashboardApp').classList.add('hidden');
-        if (isExpired) {
-          showCustomAlert("Sesi login telah berakhir karena lama tidak aktif. Silakan login kembali.", "Sesi Berakhir", "🔒");
-        }
       }
     }
 
@@ -625,9 +617,9 @@
           ? 'admin' 
           : (found.role || 'user');
 
-        localStorage.setItem('activeLoggedInUser', found.username);
-        localStorage.setItem('activeLoggedInRole', assignedRole);
-        localStorage.setItem('lastSessionActive', Date.now());
+        // Simpan sesi login hanya di sessionStorage
+        sessionStorage.setItem('activeLoggedInUser', found.username);
+        sessionStorage.setItem('activeLoggedInRole', assignedRole);
         errEl.classList.add('hidden');
         checkAuth();
       } else {
@@ -636,9 +628,9 @@
     }
 
     function handleLogout() {
-      localStorage.removeItem('activeLoggedInUser');
-      localStorage.removeItem('activeLoggedInRole');
-      localStorage.removeItem('lastSessionActive');
+      sessionStorage.removeItem('activeLoggedInUser');
+      sessionStorage.removeItem('activeLoggedInRole');
+      if (idleTimer) clearTimeout(idleTimer);
       location.reload();
     }
 
@@ -817,9 +809,9 @@
       userAccounts[index].pass = newPass;
       localStorage.setItem('app_user_accounts', JSON.stringify(userAccounts));
 
-      if (localStorage.getItem('activeLoggedInUser') === current.username) {
-        localStorage.setItem('activeLoggedInUser', newName);
-        localStorage.setItem('activeLoggedInRole', newRole);
+      if (sessionStorage.getItem('activeLoggedInUser') === current.username) {
+        sessionStorage.setItem('activeLoggedInUser', newName);
+        sessionStorage.setItem('activeLoggedInRole', newRole);
         currentUserRole = newRole;
         document.getElementById('activeUserBadge').innerText = `👤 ${newName} (${newRole.toUpperCase()})`;
       }
@@ -1148,12 +1140,6 @@
         btn.innerText = "Simpan Absensi";
       }
     }
-
-    setInterval(() => {
-      if (checkSessionExpired()) {
-        checkAuth();
-      }
-    }, 60000);
 
     window.onload = checkAuth;
   </script>
