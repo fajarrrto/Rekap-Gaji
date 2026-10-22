@@ -1,63 +1,85 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rekap Gaji & Presensi</title>
+  <title>SIGAP - Sistem Informasi Gaji &amp; Presensi</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4338ca">
-  
+
   <!-- Favicon / Logo Modern -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%234F46E5'/%3E%3Cstop offset='100%25' stop-color='%23312E81'/%3E%3C/linearGradient%3E%3ClinearGradient id='gold' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23FDE047'/%3E%3Cstop offset='100%25' stop-color='%23EAB308'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='110' fill='url(%23bg)'/%3E%3Crect x='106' y='170' width='300' height='210' rx='36' fill='%23ffffff' fill-opacity='0.15' stroke='%23ffffff' stroke-width='16'/%3E%3Cpath d='M196 170V136a60 60 0 0 1 120 0v34' fill='none' stroke='%23ffffff' stroke-width='18' stroke-linecap='round'/%3E%3Ccircle cx='256' cy='275' r='38' fill='url(%23gold)'/%3E%3Cpath d='M256 250v50M244 262h24' stroke='%231E1B4B' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%234F46E5'/%3E%3Cstop offset='100%25' stop-color='%23312E81'/%3E%3C/linearGradient%3E%3ClinearGradient id='gold' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23FDE047'/%3E%3Cstop offset='100%25' stop-color='%23EAB308'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='110' fill='url(%23bg)'/%3E%3Crect x='106' y='170' width='300' height='210' rx='36' fill='%23ffffff' fill-opacity='0.15' stroke='%23ffffff' stroke-width='16'/%3E%3Cpath d='M196 170V136a60 60 0 0 1 120 0v34' fill='none' stroke='%23ffffff' stroke-width='18' stroke-linecap='round'/%3E%3Ccircle cx='256' cy='275' r='38' fill='url(%23gold)'/%3E%3Cpath d='M256 250v50M244 262h24' stroke='%231E1B4B' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
 
   <style>
-    body { font-family: 'Inter', sans-serif; }
-    @keyframes spin-custom {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+    body {
+      font-family: 'Inter', sans-serif;
     }
+
+    @keyframes spin-custom {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
     .animate-spin-once {
       animation: spin-custom 0.6s linear;
     }
   </style>
 </head>
+
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
 
   <!-- ================= LAYAR LOGIN ================= -->
-  <div id="loginScreen" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+  <div id="loginScreen"
+    class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 max-w-sm w-full p-6 space-y-5">
       <div class="text-center space-y-2">
-        <div class="w-16 h-16 mx-auto rounded-2xl shadow-md overflow-hidden flex items-center justify-center bg-indigo-600 p-2">
+        <div
+          class="w-16 h-16 mx-auto rounded-2xl shadow-md overflow-hidden flex items-center justify-center bg-indigo-600 p-2">
           <svg class="w-full h-full" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="96" y="160" width="320" height="230" rx="36" fill="white" fill-opacity="0.2" stroke="white" stroke-width="20"/>
-            <path d="M186 160V126a70 70 0 0 1 140 0v34" stroke="white" stroke-width="20" stroke-linecap="round"/>
-            <circle cx="256" cy="275" r="42" fill="#FDE047"/>
-            <path d="M256 250v50M242 262h28" stroke="#1E1B4B" stroke-width="8" stroke-linecap="round"/>
+            <rect x="96" y="160" width="320" height="230" rx="36" fill="white" fill-opacity="0.2" stroke="white"
+              stroke-width="20" />
+            <path d="M186 160V126a70 70 0 0 1 140 0v34" stroke="white" stroke-width="20" stroke-linecap="round" />
+            <circle cx="256" cy="275" r="42" fill="#FDE047" />
+            <path d="M256 250v50M242 262h28" stroke="#1E1B4B" stroke-width="8" stroke-linecap="round" />
           </svg>
         </div>
-        <h2 class="text-xl font-bold text-slate-900">Portal Rekap Gaji</h2>
-        <p class="text-xs text-slate-500">Silakan login untuk mengakses dashboard</p>
+        <div>
+          <h2 class="text-2xl font-black text-indigo-950 tracking-wide">SIGAP</h2>
+          <p class="text-xs font-semibold text-indigo-600 mt-0.5">Sistem Informasi Gaji &amp; Presensi</p>
+          <p class="text-[11px] text-slate-400 mt-1">Silakan login untuk mengakses dashboard</p>
+        </div>
       </div>
 
       <form id="formLogin" onsubmit="handleLogin(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-medium text-slate-600 mb-1">Username</label>
-          <input type="text" id="inputUsername" placeholder="Username" required class="w-full text-sm border border-slate-300 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          <input type="text" id="inputUsername" placeholder="Username" required
+            class="w-full text-sm border border-slate-300 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
         </div>
         <div>
           <label class="block text-xs font-medium text-slate-600 mb-1">Password</label>
           <div class="relative">
-            <input type="password" id="inputPass" placeholder="Password" required class="w-full text-sm border border-slate-300 rounded-lg pl-3 pr-10 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            <button type="button" onclick="togglePassVisibility('inputPass', this)" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 focus:outline-none">
+            <input type="password" id="inputPass" placeholder="Password" required
+              class="w-full text-sm border border-slate-300 rounded-lg pl-3 pr-10 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <button type="button" onclick="togglePassVisibility('inputPass', this)"
+              class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 focus:outline-none">
               👁️
             </button>
           </div>
           <p id="loginError" class="text-xs text-red-500 mt-1.5 hidden">Akun atau Password tidak cocok!</p>
         </div>
-        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm py-2.5 rounded-lg transition duration-150 shadow">
+        <button type="submit"
+          class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm py-2.5 rounded-lg transition duration-150 shadow">
           Login
         </button>
       </form>
@@ -65,23 +87,27 @@
   </div>
 
   <!-- ================= POPUP NOTIFIKASI KUSTOM ================= -->
-  <div id="popupCustomAlert" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px] flex items-center justify-center p-4 hidden">
+  <div id="popupCustomAlert"
+    class="fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px] flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl p-6 max-w-xs w-full shadow-2xl text-center space-y-4 border border-slate-100">
-      <div id="customAlertIcon" class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
+      <div id="customAlertIcon"
+        class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
         ℹ️
       </div>
       <div>
         <h3 id="customAlertTitle" class="text-lg font-bold text-slate-900">Pemberitahuan</h3>
         <p id="customAlertMsg" class="text-xs text-slate-600 mt-1"></p>
       </div>
-      <button onclick="closeCustomAlert()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold py-2.5 rounded-lg transition shadow">
+      <button onclick="closeCustomAlert()"
+        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold py-2.5 rounded-lg transition shadow">
         Tutup
       </button>
     </div>
   </div>
 
   <!-- ================= POPUP KONFIRMASI KUSTOM ================= -->
-  <div id="popupCustomConfirm" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px] flex items-center justify-center p-4 hidden">
+  <div id="popupCustomConfirm"
+    class="fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px] flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl p-6 max-w-xs w-full shadow-2xl text-center space-y-4 border border-slate-100">
       <div class="w-14 h-14 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto text-2xl">
         ⚠️
@@ -91,10 +117,12 @@
         <p id="customConfirmMsg" class="text-xs text-slate-600 mt-1"></p>
       </div>
       <div class="grid grid-cols-2 gap-2 pt-1">
-        <button onclick="resolveCustomConfirm(false)" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold py-2.5 rounded-lg transition">
+        <button onclick="resolveCustomConfirm(false)"
+          class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold py-2.5 rounded-lg transition">
           Batal
         </button>
-        <button onclick="resolveCustomConfirm(true)" class="w-full bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold py-2.5 rounded-lg transition shadow">
+        <button onclick="resolveCustomConfirm(true)"
+          class="w-full bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold py-2.5 rounded-lg transition shadow">
           Hapus
         </button>
       </div>
@@ -102,7 +130,8 @@
   </div>
 
   <!-- ================= POPUP EDIT AKUN KUSTOM ================= -->
-  <div id="popupEditAccount" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px] flex items-center justify-center p-4 hidden">
+  <div id="popupEditAccount"
+    class="fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px] flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl p-5 max-w-sm w-full shadow-2xl border border-slate-100 space-y-4">
       <div class="flex justify-between items-center border-b border-slate-100 pb-2">
         <h3 class="text-sm font-bold text-slate-900">✏️ Ubah Data Akun</h3>
@@ -112,11 +141,13 @@
         <input type="hidden" id="editAccIndex">
         <div>
           <label class="block text-xs font-medium text-slate-600 mb-1">Username</label>
-          <input type="text" id="editAccName" required class="w-full text-xs border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
+          <input type="text" id="editAccName" required
+            class="w-full text-xs border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
         </div>
         <div>
           <label class="block text-xs font-medium text-slate-600 mb-1">Role / Peran</label>
-          <select id="editAccRole" class="w-full text-xs border border-slate-300 rounded-lg p-2 bg-white focus:ring-2 focus:ring-indigo-500">
+          <select id="editAccRole"
+            class="w-full text-xs border border-slate-300 rounded-lg p-2 bg-white focus:ring-2 focus:ring-indigo-500">
             <option value="user">User Biasa</option>
             <option value="admin">Administrator</option>
           </select>
@@ -124,17 +155,21 @@
         <div>
           <label class="block text-xs font-medium text-slate-600 mb-1">Password</label>
           <div class="relative">
-            <input type="password" id="editAccPass" required class="w-full text-xs border border-slate-300 rounded-lg p-2 pr-7 focus:ring-2 focus:ring-indigo-500">
-            <button type="button" onclick="togglePassVisibility('editAccPass', this)" class="absolute right-2 top-2 text-slate-400 text-xs">
+            <input type="password" id="editAccPass" required
+              class="w-full text-xs border border-slate-300 rounded-lg p-2 pr-7 focus:ring-2 focus:ring-indigo-500">
+            <button type="button" onclick="togglePassVisibility('editAccPass', this)"
+              class="absolute right-2 top-2 text-slate-400 text-xs">
               👁️
             </button>
           </div>
         </div>
         <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="closeEditModal()" class="px-3 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800">
+          <button type="button" onclick="closeEditModal()"
+            class="px-3 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800">
             Batal
           </button>
-          <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg shadow">
+          <button type="submit"
+            class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg shadow">
             Simpan Perubahan
           </button>
         </div>
@@ -143,44 +178,53 @@
   </div>
 
   <!-- ================= MODAL KELOLA ADMIN & AKUN LOGIN ================= -->
-  <div id="adminModal" class="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+  <div id="adminModal"
+    class="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-100 overflow-hidden">
       <div class="p-4 sm:p-5 border-b border-slate-100 flex justify-between items-center bg-indigo-50">
         <h3 class="font-bold text-indigo-900 text-sm sm:text-base flex items-center gap-2">
           ⚙️ Kelola Fitur & Akun Pengguna
         </h3>
-        <button onclick="toggleAdminModal(false)" class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none">&times;</button>
+        <button onclick="toggleAdminModal(false)"
+          class="text-slate-400 hover:text-slate-600 text-xl font-bold leading-none">&times;</button>
       </div>
-      
+
       <div class="p-4 sm:p-5 space-y-4 max-h-[70vh] overflow-y-auto text-sm">
-        
+
         <div class="p-3 sm:p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
           <div class="flex flex-wrap justify-between items-center gap-2">
             <h4 class="font-semibold text-xs text-slate-700 uppercase tracking-wider">Daftar Akun & Role</h4>
             <div class="flex items-center gap-1.5">
               <span class="text-[11px] text-indigo-600 font-medium" id="totalUserCount">2 Akun</span>
-              <button onclick="backupUsersToSheet()" class="text-[10px] bg-emerald-600 hover:bg-emerald-700 text-white px-2 py-1 rounded transition font-semibold shadow-sm">
+              <button onclick="backupUsersToSheet()"
+                class="text-[10px] bg-emerald-600 hover:bg-emerald-700 text-white px-2 py-1 rounded transition font-semibold shadow-sm">
                 ☁️ Backup
               </button>
-              <button onclick="restoreUsersFromSheet()" class="text-[10px] bg-slate-200 hover:bg-slate-300 text-slate-700 px-2 py-1 rounded transition font-semibold">
+              <button onclick="restoreUsersFromSheet()"
+                class="text-[10px] bg-slate-200 hover:bg-slate-300 text-slate-700 px-2 py-1 rounded transition font-semibold">
                 📥 Pulihkan
               </button>
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-7 gap-2 pt-1">
-            <input type="text" id="newUsername" placeholder="Username" class="sm:col-span-2 text-xs border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
-            <select id="newUserRole" class="sm:col-span-2 text-xs border border-slate-300 rounded-lg p-2 bg-white focus:ring-2 focus:ring-indigo-500">
+            <input type="text" id="newUsername" placeholder="Username"
+              class="sm:col-span-2 text-xs border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500">
+            <select id="newUserRole"
+              class="sm:col-span-2 text-xs border border-slate-300 rounded-lg p-2 bg-white focus:ring-2 focus:ring-indigo-500">
               <option value="user">User</option>
               <option value="admin">Admin</option>
             </select>
             <div class="sm:col-span-2 relative">
-              <input type="password" id="newUserPass" placeholder="Password" class="w-full text-xs border border-slate-300 rounded-lg p-2 pr-6 focus:ring-2 focus:ring-indigo-500">
-              <button type="button" onclick="togglePassVisibility('newUserPass', this)" class="absolute right-2 top-2 text-slate-400 text-xs">
+              <input type="password" id="newUserPass" placeholder="Password"
+                class="w-full text-xs border border-slate-300 rounded-lg p-2 pr-6 focus:ring-2 focus:ring-indigo-500">
+              <button type="button" onclick="togglePassVisibility('newUserPass', this)"
+                class="absolute right-2 top-2 text-slate-400 text-xs">
                 👁️
               </button>
             </div>
-            <button onclick="addUserAccount()" class="sm:col-span-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg py-2 sm:py-0 transition">
+            <button onclick="addUserAccount()"
+              class="sm:col-span-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg py-2 sm:py-0 transition">
               + Add
             </button>
           </div>
@@ -203,25 +247,30 @@
 
         <div class="p-3 sm:p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
           <h4 class="font-semibold text-xs text-slate-700 uppercase tracking-wider">Kelola Fitur Dashboard</h4>
-          
-          <label class="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 cursor-pointer text-xs">
+
+          <label
+            class="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 cursor-pointer text-xs">
             <span class="text-slate-700 font-medium">Tampilkan Form Tambah Log Presensi</span>
             <input type="checkbox" id="cfgToggleForm" class="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4">
           </label>
 
-          <label class="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 cursor-pointer text-xs">
+          <label
+            class="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 cursor-pointer text-xs">
             <span class="text-slate-700 font-medium">Tampilkan Kartu Ringkasan Gaji (KPI)</span>
             <input type="checkbox" id="cfgToggleKpi" class="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4">
           </label>
 
-          <label class="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 cursor-pointer text-xs">
+          <label
+            class="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 cursor-pointer text-xs">
             <span class="text-slate-700 font-medium">Aktifkan Tombol Unduh CSV</span>
             <input type="checkbox" id="cfgToggleExport" class="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4">
           </label>
 
-          <label class="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 cursor-pointer text-xs">
+          <label
+            class="flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 cursor-pointer text-xs">
             <span class="text-slate-700 font-medium">Izinkan Role User Biasa Mengunduh CSV</span>
-            <input type="checkbox" id="cfgToggleUserExport" class="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+            <input type="checkbox" id="cfgToggleUserExport"
+              class="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4">
           </label>
         </div>
 
@@ -252,7 +301,8 @@
       </div>
 
       <div class="p-3 sm:p-4 bg-slate-100 flex justify-end border-t border-slate-200">
-        <button onclick="saveAdminSettings()" class="px-5 py-2 text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow">
+        <button onclick="saveAdminSettings()"
+          class="px-5 py-2 text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow">
           Simpan Semua Pengaturan
         </button>
       </div>
@@ -264,50 +314,63 @@
     <header class="bg-indigo-700 text-white shadow-md sticky top-0 z-30">
       <div class="max-w-7xl mx-auto px-3 sm:px-4 py-3 flex flex-wrap justify-between items-center gap-2">
         <div class="flex items-center space-x-2.5">
-          <div class="w-8 h-8 rounded-lg bg-indigo-800 border border-indigo-500/50 flex items-center justify-center p-1.5 shadow-sm">
+          <div
+            class="w-9 h-9 rounded-lg bg-indigo-800 border border-indigo-500/50 flex items-center justify-center p-1.5 shadow-sm shrink-0">
             <svg class="w-full h-full" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="96" y="160" width="320" height="230" rx="36" fill="white" fill-opacity="0.25" stroke="white" stroke-width="22"/>
-              <path d="M186 160V126a70 70 0 0 1 140 0v34" stroke="white" stroke-width="22" stroke-linecap="round"/>
-              <circle cx="256" cy="275" r="42" fill="#FDE047"/>
-              <path d="M256 250v50M242 262h28" stroke="#1E1B4B" stroke-width="9" stroke-linecap="round"/>
+              <rect x="96" y="160" width="320" height="230" rx="36" fill="white" fill-opacity="0.25" stroke="white"
+                stroke-width="22" />
+              <path d="M186 160V126a70 70 0 0 1 140 0v34" stroke="white" stroke-width="22" stroke-linecap="round" />
+              <circle cx="256" cy="275" r="42" fill="#FDE047" />
+              <path d="M256 250v50M242 262h28" stroke="#1E1B4B" stroke-width="9" stroke-linecap="round" />
             </svg>
           </div>
-          <span class="text-base sm:text-lg font-bold tracking-tight">Rekap Gaji</span>
-          <span id="activeUserBadge" class="text-[10px] sm:text-xs px-2 py-0.5 rounded font-medium"></span>
+          <div class="flex flex-col">
+            <div class="flex items-center space-x-1.5">
+              <span class="text-base sm:text-lg font-black tracking-tight leading-none text-white">SIGAP</span>
+              <span id="activeUserBadge" class="text-[9px] sm:text-xs px-1.5 py-0.5 rounded font-medium"></span>
+            </div>
+            <span class="text-[9px] sm:text-[11px] text-indigo-200 font-medium leading-tight mt-0.5">Sistem Informasi Gaji &amp; Presensi</span>
+          </div>
         </div>
-        
+
         <div class="flex items-center space-x-1.5 sm:space-x-2">
           <!-- 1. BULAN DULU -->
           <div class="flex items-center space-x-1">
-            <select id="monthSelect" onchange="loadMonthData()" class="bg-indigo-800 text-white text-xs sm:text-sm font-medium rounded-lg px-2.5 sm:px-3 py-1.5 border border-indigo-500 focus:outline-none">
+            <select id="monthSelect" onchange="loadMonthData()"
+              class="bg-indigo-800 text-white text-xs sm:text-sm font-medium rounded-lg px-2.5 sm:px-3 py-1.5 border border-indigo-500 focus:outline-none">
               <option>Memuat...</option>
             </select>
           </div>
 
           <!-- 2. BARU TAHUN -->
           <div class="flex items-center space-x-1">
-            <select id="yearSelect" onchange="handleYearChange()" class="bg-indigo-900 text-amber-300 text-xs sm:text-sm font-bold rounded-lg px-2 sm:px-2.5 py-1.5 border border-indigo-500 focus:outline-none">
+            <select id="yearSelect" onchange="handleYearChange()"
+              class="bg-indigo-900 text-amber-300 text-xs sm:text-sm font-bold rounded-lg px-2 sm:px-2.5 py-1.5 border border-indigo-500 focus:outline-none">
               <option value="2026">2026</option>
               <option value="2027">2027</option>
             </select>
           </div>
 
           <!-- 3. TOMBOL SINKRONISASI SHEET -->
-          <button id="btnSyncSheet" onclick="triggerManualSync()" title="Sinkronkan dengan Google Sheets" class="bg-indigo-800/90 hover:bg-indigo-900 text-xs px-2.5 sm:px-3 py-1.5 rounded-lg text-indigo-100 hover:text-white transition flex items-center gap-1 font-medium border border-indigo-500/50">
+          <button id="btnSyncSheet" onclick="triggerManualSync()" title="Sinkronkan dengan Google Sheets"
+            class="bg-indigo-800/90 hover:bg-indigo-900 text-xs px-2.5 sm:px-3 py-1.5 rounded-lg text-indigo-100 hover:text-white transition flex items-center gap-1 font-medium border border-indigo-500/50">
             <span id="syncIcon" class="inline-block transition-transform duration-500">🔄</span>
             <span class="hidden sm:inline">Sync</span>
           </button>
 
           <!-- Tombol Install PWA -->
-          <button id="btnInstallApp" onclick="installPwaApp()" class="bg-emerald-600 hover:bg-emerald-700 text-xs px-2.5 py-1.5 rounded-lg text-white transition flex items-center gap-1 hidden font-medium">
+          <button id="btnInstallApp" onclick="installPwaApp()"
+            class="bg-emerald-600 hover:bg-emerald-700 text-xs px-2.5 py-1.5 rounded-lg text-white transition flex items-center gap-1 hidden font-medium">
             📱 Install
           </button>
-          
-          <button id="btnAdminManage" onclick="toggleAdminModal(true)" class="bg-indigo-800/90 hover:bg-indigo-900 text-xs px-2.5 sm:px-3 py-1.5 rounded-lg text-indigo-100 hover:text-white transition flex items-center gap-1 hidden">
+
+          <button id="btnAdminManage" onclick="toggleAdminModal(true)"
+            class="bg-indigo-800/90 hover:bg-indigo-900 text-xs px-2.5 sm:px-3 py-1.5 rounded-lg text-indigo-100 hover:text-white transition flex items-center gap-1 hidden">
             ⚙️ <span class="hidden sm:inline">Kelola Fitur</span>
           </button>
-          
-          <button onclick="handleLogout()" class="bg-rose-600 hover:bg-rose-700 text-xs px-2.5 sm:px-3 py-1.5 rounded-lg text-white transition font-medium">
+
+          <button onclick="handleLogout()"
+            class="bg-rose-600 hover:bg-rose-700 text-xs px-2.5 sm:px-3 py-1.5 rounded-lg text-white transition font-medium">
             Logout
           </button>
         </div>
@@ -342,7 +405,8 @@
           <span class="text-[10px] sm:text-xs text-emerald-600 font-medium">Tetap Bulanan</span>
         </div>
 
-        <div class="bg-white p-3 sm:p-4 rounded-xl border border-indigo-100 shadow-sm bg-gradient-to-br from-indigo-50/50 to-white col-span-2 sm:col-span-1">
+        <div
+          class="bg-white p-3 sm:p-4 rounded-xl border border-indigo-100 shadow-sm bg-gradient-to-br from-indigo-50/50 to-white col-span-2 sm:col-span-1">
           <p class="text-[10px] sm:text-xs font-semibold uppercase text-indigo-700 tracking-wider">Take Home Pay</p>
           <h3 id="statTHP" class="text-lg sm:text-2xl font-bold text-indigo-700 mt-1">Rp3.495.000</h3>
           <span id="statKetAdmin" class="text-[10px] sm:text-xs text-slate-400">Setelah Admin Rp5.000</span>
@@ -353,23 +417,28 @@
       <div id="contentGrid" class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
 
         <!-- Form Tambah Presensi -->
-        <div id="wrapperFormEntry" class="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm lg:col-span-1 h-fit">
-          <h2 class="text-sm sm:text-base font-bold text-slate-900 mb-3 sm:mb-4 pb-2 border-b border-slate-100">Tambah Log Kehadiran</h2>
-          
+        <div id="wrapperFormEntry"
+          class="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm lg:col-span-1 h-fit">
+          <h2 class="text-sm sm:text-base font-bold text-slate-900 mb-3 sm:mb-4 pb-2 border-b border-slate-100">Tambah
+            Log Kehadiran</h2>
+
           <form id="entryForm" onsubmit="submitEntry(event)" class="space-y-3 sm:space-y-4">
             <div>
               <label class="block text-xs font-medium text-slate-600 mb-1">Pilih Tanggal</label>
-              <input type="date" id="inTanggalPicker" required class="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-slate-50">
+              <input type="date" id="inTanggalPicker" required
+                class="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-slate-50">
             </div>
 
             <div class="grid grid-cols-2 gap-2">
               <div>
                 <label class="block text-xs font-medium text-slate-600 mb-1">Hari Ke- (Otomatis)</label>
-                <input type="text" id="inHariKe" readonly class="w-full text-sm border border-slate-200 bg-slate-100 text-slate-600 font-semibold rounded-lg px-3 py-2 cursor-not-allowed">
+                <input type="text" id="inHariKe" readonly
+                  class="w-full text-sm border border-slate-200 bg-slate-100 text-slate-600 font-semibold rounded-lg px-3 py-2 cursor-not-allowed">
               </div>
               <div>
                 <label class="block text-xs font-medium text-slate-600 mb-1">Status</label>
-                <select id="inStatus" class="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                <select id="inStatus"
+                  class="w-full text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
                   <option value="Hadir">Hadir</option>
                   <option value="Izin">Izin</option>
                   <option value="Sakit">Sakit</option>
@@ -380,36 +449,44 @@
             <div class="grid grid-cols-2 gap-2">
               <div>
                 <label class="block text-xs font-medium text-slate-600 mb-1">Gaji Harian</label>
-                <input type="number" id="inGajiHarian" readonly class="w-full text-sm border border-slate-200 bg-slate-100 text-slate-600 font-semibold rounded-lg px-3 py-2 cursor-not-allowed">
+                <input type="number" id="inGajiHarian" readonly
+                  class="w-full text-sm border border-slate-200 bg-slate-100 text-slate-600 font-semibold rounded-lg px-3 py-2 cursor-not-allowed">
               </div>
               <div>
                 <label class="block text-xs font-medium text-slate-600 mb-1">Uang Makan</label>
-                <input type="number" id="inUangMakan" readonly class="w-full text-sm border border-slate-200 bg-slate-100 text-slate-600 font-semibold rounded-lg px-3 py-2 cursor-not-allowed">
+                <input type="number" id="inUangMakan" readonly
+                  class="w-full text-sm border border-slate-200 bg-slate-100 text-slate-600 font-semibold rounded-lg px-3 py-2 cursor-not-allowed">
               </div>
             </div>
 
-            <button type="submit" id="btnSubmit" class="w-full mt-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm py-2.5 rounded-lg transition duration-150 shadow">
+            <button type="submit" id="btnSubmit"
+              class="w-full mt-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm py-2.5 rounded-lg transition duration-150 shadow">
               Simpan Absensi
             </button>
           </form>
         </div>
 
         <!-- Riwayat Presensi -->
-        <div id="wrapperTableSection" class="bg-white rounded-xl border border-slate-200 shadow-sm lg:col-span-2 overflow-hidden flex flex-col">
+        <div id="wrapperTableSection"
+          class="bg-white rounded-xl border border-slate-200 shadow-sm lg:col-span-2 overflow-hidden flex flex-col">
           <div class="p-3 sm:p-4 border-b border-slate-100 flex flex-wrap justify-between items-center gap-2">
             <div class="flex items-center gap-2">
               <h2 class="text-sm sm:text-base font-bold text-slate-900">Rincian Hari Kerja</h2>
-              <span id="labelSheet" class="text-[10px] sm:text-xs font-medium text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full">Sheet Aktif</span>
+              <span id="labelSheet"
+                class="text-[10px] sm:text-xs font-medium text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full">Sheet
+                Aktif</span>
             </div>
-            
-            <button id="btnExportCsv" onclick="exportToCsv()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-300 transition flex items-center gap-1.5 hidden">
+
+            <button id="btnExportCsv" onclick="exportToCsv()"
+              class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-3 py-1.5 rounded-lg border border-slate-300 transition flex items-center gap-1.5 hidden">
               📥 Extract to CSV
             </button>
           </div>
 
           <div class="overflow-x-auto flex-1">
             <table class="w-full text-left text-xs sm:text-sm">
-              <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase font-medium text-[10px] sm:text-xs">
+              <thead
+                class="bg-slate-50 border-b border-slate-200 text-slate-600 uppercase font-medium text-[10px] sm:text-xs">
                 <tr>
                   <th class="py-2.5 px-3">Tanggal</th>
                   <th class="py-2.5 px-2">Ke-</th>
@@ -574,8 +651,8 @@
 
         const badge = document.getElementById('activeUserBadge');
         badge.innerText = `👤 ${activeUser} (${activeRole.toUpperCase()})`;
-        badge.className = activeRole === "admin" 
-          ? "text-xs px-2 py-0.5 rounded font-medium bg-amber-400 text-slate-900" 
+        badge.className = activeRole === "admin"
+          ? "text-xs px-2 py-0.5 rounded font-medium bg-amber-400 text-slate-900"
           : "text-xs px-2 py-0.5 rounded font-medium bg-indigo-800 text-indigo-200";
 
         const btnAdmin = document.getElementById('btnAdminManage');
@@ -603,8 +680,8 @@
 
       const found = userAccounts.find(acc => acc.username.toLowerCase() === u.toLowerCase() && acc.pass === p);
       if (found) {
-        const assignedRole = (found.username.toLowerCase() === 'fajar' || found.username.toLowerCase() === 'admin') 
-          ? 'admin' 
+        const assignedRole = (found.username.toLowerCase() === 'fajar' || found.username.toLowerCase() === 'admin')
+          ? 'admin'
           : (found.role || 'user');
 
         sessionStorage.setItem('activeLoggedInUser', found.username);
@@ -626,7 +703,7 @@
     async function triggerManualSync() {
       const icon = document.getElementById('syncIcon');
       icon.classList.add('animate-spin-once');
-      
+
       showCustomAlert("Menyinkronkan data dengan Google Sheets...", "Sinkronisasi", "🔄");
 
       try {
@@ -683,12 +760,12 @@
         document.getElementById('cfgUangMakan').value = currentSettings.uangMakan;
         document.getElementById('cfgGajiPokok').value = currentSettings.gajiPokok;
         document.getElementById('cfgAdminFee').value = currentSettings.adminFee;
-        
+
         document.getElementById('cfgToggleForm').checked = currentSettings.showForm;
         document.getElementById('cfgToggleKpi').checked = currentSettings.showKpi;
         document.getElementById('cfgToggleExport').checked = currentSettings.allowExport;
         document.getElementById('cfgToggleUserExport').checked = currentSettings.allowUserExport;
-        
+
         renderUserTable();
         modal.classList.remove('hidden');
       } else {
@@ -805,8 +882,8 @@
         return;
       }
 
-      if (newName.toLowerCase() !== current.username.toLowerCase() && 
-          userAccounts.some(acc => acc.username.toLowerCase() === newName.toLowerCase())) {
+      if (newName.toLowerCase() !== current.username.toLowerCase() &&
+        userAccounts.some(acc => acc.username.toLowerCase() === newName.toLowerCase())) {
         showCustomAlert("Username tersebut sudah terdaftar!", "Peringatan", "⚠️");
         return;
       }
@@ -830,7 +907,7 @@
 
     function triggerDeleteUser(index) {
       const username = userAccounts[index].username;
-      showCustomConfirm(`Apakah Anda yakin ingin menghapus akun "${username}"?`, function() {
+      showCustomConfirm(`Apakah Anda yakin ingin menghapus akun "${username}"?`, function () {
         userAccounts.splice(index, 1);
         localStorage.setItem('app_user_accounts', JSON.stringify(userAccounts));
         renderUserTable();
@@ -843,7 +920,7 @@
       currentSettings.uangMakan = Number(document.getElementById('cfgUangMakan').value);
       currentSettings.gajiPokok = Number(document.getElementById('cfgGajiPokok').value);
       currentSettings.adminFee = Number(document.getElementById('cfgAdminFee').value);
-      
+
       currentSettings.showForm = document.getElementById('cfgToggleForm').checked;
       currentSettings.showKpi = document.getElementById('cfgToggleKpi').checked;
       currentSettings.allowExport = document.getElementById('cfgToggleExport').checked;
@@ -853,7 +930,7 @@
       localStorage.setItem('cfg_uangMakan', currentSettings.uangMakan);
       localStorage.setItem('cfg_gajiPokok', currentSettings.gajiPokok);
       localStorage.setItem('cfg_adminFee', currentSettings.adminFee);
-      
+
       localStorage.setItem('cfg_showForm', currentSettings.showForm);
       localStorage.setItem('cfg_showKpi', currentSettings.showKpi);
       localStorage.setItem('cfg_allowExport', currentSettings.allowExport);
@@ -889,7 +966,7 @@
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement("a");
       link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `Rekap_Gaji_${activeMonth}_${activeYear}.csv`);
+      link.setAttribute("download", `SIGAP_Rekap_${activeMonth}_${activeYear}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -984,7 +1061,7 @@
       try {
         const response = await fetch(`${SCRIPT_URL}?action=getMonths&year=${year}`);
         const data = await response.json();
-        
+
         const sel = document.getElementById('monthSelect');
         sel.innerHTML = '';
 
@@ -1012,7 +1089,7 @@
       const year = document.getElementById('yearSelect').value;
       const month = document.getElementById('monthSelect').value;
       document.getElementById('labelSheet').innerText = `${month} ${year}`;
-      
+
       const tbody = document.getElementById('tableBody');
       tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-slate-400">Memuat rincian data...</td></tr>';
 
@@ -1083,7 +1160,7 @@
           const isFilled = String(r.status).trim() !== '' && (Number(r.totalGaji || 0) > 0 || r.status.toLowerCase() === 'izin' || r.status.toLowerCase() === 'sakit');
           const tr = document.createElement('tr');
           tr.className = isFilled ? "hover:bg-slate-50 transition" : "hover:bg-amber-50/50 bg-slate-50/50 text-slate-400";
-          
+
           let badgeColor = "bg-emerald-100 text-emerald-800";
           if (String(r.status).toLowerCase() === 'izin') badgeColor = "bg-amber-100 text-amber-800";
           if (String(r.status).toLowerCase() === 'sakit') badgeColor = "bg-rose-100 text-rose-800";
@@ -1164,4 +1241,5 @@
     window.onload = checkAuth;
   </script>
 </body>
+
 </html>
