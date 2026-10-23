@@ -35,10 +35,66 @@
     .animate-spin-once {
       animation: spin-custom 0.6s linear;
     }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateY(-12px) scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes toastOut {
+      from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.96);
+      }
+    }
+
+    .toast-enter {
+      animation: toastIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .toast-exit {
+      animation: toastOut 0.2s ease-in forwards;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      #slipPrintContainer, #slipPrintContainer * {
+        visibility: visible !important;
+      }
+      #slipPrintContainer {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 24px !important;
+        background: white !important;
+        color: black !important;
+        box-shadow: none !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
+
+  <!-- ================= FLOATING TOAST NOTIFICATIONS ================= -->
+  <div id="toastContainer" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-3"></div>
 
   <!-- ================= LAYAR LOGIN ================= -->
   <div id="loginScreen"
@@ -175,6 +231,159 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL SLIP GAJI (PRINTABLE) ================= -->
+  <div id="slipGajiModal"
+    class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 hidden overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-100 overflow-hidden my-auto">
+      <!-- Modal Header (no-print) -->
+      <div class="p-3.5 sm:p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50 no-print">
+        <h3 class="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-2">
+          <span>🧾 Slip Gaji Karyawan</span>
+        </h3>
+        <button onclick="closeSlipModal()" aria-label="Tutup"
+          class="w-7 h-7 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 flex items-center justify-center font-bold text-sm leading-none transition">
+          ✕
+        </button>
+      </div>
+
+      <!-- Printable Slip Area -->
+      <div id="slipPrintContainer" class="p-5 sm:p-6 text-slate-800 space-y-4 text-xs sm:text-sm bg-white">
+        <!-- Kop Slip Gaji -->
+        <div class="flex items-start justify-between border-b-2 border-indigo-600 pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center p-2 text-white">
+              <svg class="w-full h-full" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="96" y="160" width="320" height="230" rx="36" fill="white" fill-opacity="0.25" stroke="white" stroke-width="22" />
+                <path d="M186 160V126a70 70 0 0 1 140 0v34" stroke="white" stroke-width="22" stroke-linecap="round" />
+                <circle cx="256" cy="275" r="42" fill="#FDE047" />
+                <path d="M256 250v50M242 262h28" stroke="#1E1B4B" stroke-width="9" stroke-linecap="round" />
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-base sm:text-lg font-black tracking-tight text-slate-900 leading-tight">SIGAP INDONESIA</h2>
+              <p class="text-[10px] sm:text-xs text-indigo-700 font-semibold">Sistem Informasi Gaji & Presensi</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="inline-block px-2.5 py-0.5 rounded bg-indigo-50 text-indigo-800 text-[10px] font-bold border border-indigo-200 uppercase">
+              SLIP GAJI RESMI
+            </span>
+            <p id="slipPrintTgl" class="text-[10px] text-slate-400 mt-1">Dicetak: -</p>
+          </div>
+        </div>
+
+        <!-- Info Karyawan & Periode -->
+        <div class="grid grid-cols-2 gap-2 p-3 bg-slate-50 rounded-xl border border-slate-100 text-xs">
+          <div>
+            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">Nama Karyawan</span>
+            <b id="slipNamaUser" class="text-slate-900 text-xs sm:text-sm font-bold">-</b>
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">Periode Penggajian</span>
+            <b id="slipPeriode" class="text-indigo-700 text-xs sm:text-sm font-bold">-</b>
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">Jabatan / Role</span>
+            <span id="slipRole" class="font-semibold text-slate-700">-</span>
+          </div>
+          <div>
+            <span class="text-[10px] text-slate-400 uppercase tracking-wider block">Rekap Kehadiran</span>
+            <span id="slipRekapHadir" class="font-semibold text-slate-700">-</span>
+          </div>
+        </div>
+
+        <!-- Rincian Penghasilan -->
+        <div>
+          <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Rincian Pendapatan</h4>
+          <div class="border border-slate-200 rounded-lg overflow-hidden">
+            <table class="w-full text-xs">
+              <thead class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
+                <tr>
+                  <th class="p-2 text-left">Komponen</th>
+                  <th class="p-2 text-center">Qty / Satuan</th>
+                  <th class="p-2 text-right">Jumlah</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-slate-700">
+                <tr id="slipRowGapok">
+                  <td class="p-2 font-medium">Gaji Pokok Bulanan</td>
+                  <td class="p-2 text-center text-slate-500">1 Bulan</td>
+                  <td id="slipValGapok" class="p-2 text-right font-semibold">Rp0</td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-medium">Gaji Harian</td>
+                  <td id="slipQtyGaji" class="p-2 text-center text-slate-500">-</td>
+                  <td id="slipValGaji" class="p-2 text-right font-semibold">Rp0</td>
+                </tr>
+                <tr>
+                  <td class="p-2 font-medium">Uang Makan</td>
+                  <td id="slipQtyMakan" class="p-2 text-center text-slate-500">-</td>
+                  <td id="slipValMakan" class="p-2 text-right font-semibold">Rp0</td>
+                </tr>
+                <tr class="bg-indigo-50/50 font-bold text-indigo-950">
+                  <td colspan="2" class="p-2">Subtotal Penghasilan Kotor</td>
+                  <td id="slipValKotor" class="p-2 text-right">Rp0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Rincian Potongan -->
+        <div>
+          <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">Potongan</h4>
+          <div class="border border-slate-200 rounded-lg overflow-hidden">
+            <table class="w-full text-xs">
+              <tbody class="text-slate-700">
+                <tr>
+                  <td class="p-2 font-medium">Potongan Pajak / Administrasi</td>
+                  <td id="slipValPajak" class="p-2 text-right font-semibold text-rose-600">Rp0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Total Bersih (THP) -->
+        <div class="p-3 bg-indigo-600 text-white rounded-xl flex items-center justify-between shadow-sm">
+          <div>
+            <span class="text-[10px] uppercase font-bold tracking-wider text-indigo-200 block">Take Home Pay (THP)</span>
+            <span class="text-xs font-medium text-indigo-100">Total Diterima Bersih</span>
+          </div>
+          <div class="text-right">
+            <span id="slipValTHP" class="text-lg sm:text-xl font-black tracking-tight text-amber-300">Rp0</span>
+          </div>
+        </div>
+
+        <!-- Kolom Tanda Tangan Cetak -->
+        <div class="pt-6 grid grid-cols-2 text-center text-[11px] text-slate-600">
+          <div>
+            <p>Diterima Oleh,</p>
+            <div class="h-14"></div>
+            <p id="slipTtdNama" class="font-bold border-t border-slate-300 inline-block pt-1 min-w-[120px]">( Pengguna )</p>
+          </div>
+          <div>
+            <p>Mengetahui (HRD/Admin),</p>
+            <div class="h-14"></div>
+            <p class="font-bold border-t border-slate-300 inline-block pt-1 min-w-[120px]">( Manajemen SIGAP )</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer Action (no-print) -->
+      <div class="p-3 sm:p-4 bg-slate-100 flex items-center justify-end gap-2 border-t border-slate-200 no-print">
+        <button onclick="closeSlipModal()"
+          class="px-4 py-2 text-xs font-semibold text-slate-600 hover:text-slate-800 transition">
+          Tutup
+        </button>
+        <button onclick="printSlip()"
+          class="px-5 py-2 text-xs font-bold bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white rounded-lg shadow-sm flex items-center gap-1.5 transition">
+          <span>🖨️ Cetak / Simpan PDF</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -469,7 +678,13 @@
               <span class="text-sm sm:text-base font-black tracking-tight leading-none text-white">SIGAP</span>
               <span id="activeUserBadge" class="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-full font-bold"></span>
             </div>
-            <span class="hidden sm:inline text-[9px] sm:text-[10px] text-indigo-200 font-medium leading-tight mt-0.5">Sistem Gaji & Presensi</span>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span class="hidden sm:inline text-[9px] sm:text-[10px] text-indigo-200 font-medium leading-tight">Sistem Gaji & Presensi</span>
+              <span id="networkStatusBadge" class="inline-flex items-center gap-1 text-[8px] sm:text-[9px] font-semibold bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-full border border-emerald-400/30">
+                <span id="networkStatusDot" class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                <span id="networkStatusText">Online</span>
+              </span>
+            </div>
           </div>
         </div>
 
@@ -530,8 +745,15 @@
               <span class="text-xs sm:text-sm">📅</span>
             </div>
             <div class="mt-0.5 sm:mt-1">
-              <h3 id="statHari" class="text-base sm:text-lg lg:text-xl font-black text-slate-900 leading-tight">-</h3>
-              <span class="text-[10px] sm:text-[11px] text-emerald-600 font-semibold inline-flex items-center gap-0.5">Hari Masuk</span>
+              <div class="flex items-baseline gap-1.5">
+                <h3 id="statHari" class="text-base sm:text-lg lg:text-xl font-black text-slate-900 leading-tight">-</h3>
+                <span class="text-[10px] sm:text-[11px] text-emerald-600 font-semibold inline-flex items-center gap-0.5">Hari Masuk</span>
+              </div>
+              <div id="statIzinSakit" class="text-[9px] sm:text-[10px] text-slate-500 font-medium mt-0.5 flex items-center gap-1.5 flex-wrap">
+                <span class="text-amber-600 font-semibold">Izin: <b id="countIzin" class="font-bold">0</b></span>
+                <span class="text-slate-300">•</span>
+                <span class="text-rose-600 font-semibold">Sakit: <b id="countSakit" class="font-bold">0</b></span>
+              </div>
             </div>
           </div>
 
@@ -585,10 +807,10 @@
           </div>
         </section>
 
-        <!-- GAMBAR 3: Form Tambah Log Kehadiran (Compact & Simple) -->
+        <!-- GAMBAR 3: Form Tambah Log Kehadiran (Compact, Smart & Simple) -->
         <div id="wrapperFormEntry" class="max-w-xl mx-auto w-full">
-          <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200/90 shadow-sm">
-            <div class="flex items-center justify-between mb-3 pb-2.5 border-b border-slate-100">
+          <div class="bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-200/90 shadow-sm space-y-3">
+            <div class="flex items-center justify-between pb-2.5 border-b border-slate-100">
               <h2 class="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-1.5">
                 <span>Tambah Log Kehadiran</span>
               </h2>
@@ -597,27 +819,60 @@
               </span>
             </div>
 
+            <!-- Quick Status Banner Hari Ini -->
+            <div id="todayStatusBanner" class="p-2.5 rounded-xl border text-xs flex items-center justify-between gap-2 bg-slate-50 border-slate-200 text-slate-600 transition-all duration-300">
+              <div class="flex items-center gap-2 min-w-0">
+                <span id="todayStatusIcon" class="text-base shrink-0">⏳</span>
+                <span id="todayStatusText" class="truncate font-medium">Memeriksa status hari ini...</span>
+              </div>
+              <span id="todayStatusTag" class="text-[10px] px-2 py-0.5 rounded-md font-bold shrink-0 bg-slate-200 text-slate-700">Cek</span>
+            </div>
+
             <form id="entryForm" onsubmit="submitEntry(event)" class="space-y-3">
+              <!-- Tanggal + Shortcut Hari Ini & Kemarin -->
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Pilih Tanggal</label>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="block text-xs font-semibold text-slate-700">Pilih Tanggal</label>
+                  <div class="flex items-center gap-1 text-[10px]">
+                    <button type="button" onclick="setQuickDate('today')"
+                      class="px-2 py-0.5 rounded bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold transition border border-indigo-100">
+                      Hari Ini
+                    </button>
+                    <button type="button" onclick="setQuickDate('yesterday')"
+                      class="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition border border-slate-200">
+                      Kemarin
+                    </button>
+                  </div>
+                </div>
                 <input type="date" id="inTanggalPicker" required
                   class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-slate-50 font-medium">
               </div>
 
-              <div class="grid grid-cols-2 gap-2.5">
+              <!-- Hari Ke- & Segmented Status Pill Selector -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
                   <label class="block text-xs font-semibold text-slate-700 mb-1">Hari Ke- (Otomatis)</label>
                   <input type="text" id="inHariKe" readonly
                     class="w-full text-xs sm:text-sm border border-slate-200 bg-slate-100 text-slate-700 font-bold rounded-lg px-3 py-2 cursor-not-allowed">
                 </div>
+
                 <div>
-                  <label class="block text-xs font-semibold text-slate-700 mb-1">Status</label>
-                  <select id="inStatus"
-                    class="w-full text-xs sm:text-sm border border-slate-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white font-medium">
-                    <option value="Hadir">Hadir</option>
-                    <option value="Izin">Izin</option>
-                    <option value="Sakit">Sakit</option>
-                  </select>
+                  <label class="block text-xs font-semibold text-slate-700 mb-1">Status Kehadiran</label>
+                  <input type="hidden" id="inStatus" value="Hadir">
+                  <div class="grid grid-cols-3 gap-1 p-1 bg-slate-100 rounded-lg border border-slate-200">
+                    <button type="button" id="btnStatusHadir" onclick="selectStatus('Hadir')"
+                      class="py-1.5 px-2 rounded-md text-xs font-bold transition flex items-center justify-center gap-1 bg-emerald-600 text-white shadow-xs">
+                      <span>✓</span> Hadir
+                    </button>
+                    <button type="button" id="btnStatusIzin" onclick="selectStatus('Izin')"
+                      class="py-1.5 px-2 rounded-md text-xs font-medium transition flex items-center justify-center gap-1 text-slate-700 hover:bg-white/60">
+                      Izin
+                    </button>
+                    <button type="button" id="btnStatusSakit" onclick="selectStatus('Sakit')"
+                      class="py-1.5 px-2 rounded-md text-xs font-medium transition flex items-center justify-center gap-1 text-slate-700 hover:bg-white/60">
+                      Sakit
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -635,8 +890,8 @@
               </div>
 
               <button type="submit" id="btnSubmit"
-                class="w-full mt-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold text-xs sm:text-sm py-2.5 rounded-xl transition duration-150 shadow-md hover:shadow">
-                Simpan Absensi
+                class="w-full mt-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-semibold text-xs sm:text-sm py-2.5 rounded-xl transition duration-150 shadow-md hover:shadow flex items-center justify-center gap-2">
+                <span>Simpan Absensi</span>
               </button>
             </form>
           </div>
@@ -653,25 +908,64 @@
             <span>← Kembali ke Form Absensi</span>
           </button>
 
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
             <span id="labelSheet"
               class="text-[10px] sm:text-xs font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-200">
               Sheet Aktif
             </span>
+            <!-- Tombol Cetak Slip Gaji -->
+            <button onclick="openSlipModal()"
+              class="bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-xs font-semibold px-2.5 py-1 rounded-lg transition flex items-center gap-1.5 shadow-xs">
+              <span>🖨️ Cetak Slip</span>
+            </button>
             <button id="btnExportCsv" onclick="exportToCsv()"
               class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-2.5 py-1 rounded-lg border border-slate-300 transition flex items-center gap-1.5 hidden shadow-xs">
-              📥 Extract CSV
+              <span>📥 CSV</span>
             </button>
           </div>
         </div>
 
-        <!-- Tabel Rincian Data Presensi -->
+        <!-- Tabel Rincian Data Presensi dengan Filter & Search -->
         <div id="wrapperTableSection"
           class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-          <div class="p-3 sm:p-4 border-b border-slate-100 flex items-center justify-between">
-            <div>
-              <h2 class="text-sm sm:text-base font-bold text-slate-900">Rincian Hari Kerja</h2>
-              <p class="text-[10px] sm:text-xs text-slate-500">Daftar kehadiran & akumulasi pendapatan harian</p>
+          <div class="p-3 sm:p-4 border-b border-slate-100 space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <h2 class="text-sm sm:text-base font-bold text-slate-900">Rincian Hari Kerja</h2>
+                <p class="text-[10px] sm:text-xs text-slate-500">Daftar kehadiran & akumulasi pendapatan harian</p>
+              </div>
+              <span id="filterResultCount" class="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
+                Menampilkan data...
+              </span>
+            </div>
+
+            <!-- Filter Status & Search Bar -->
+            <div class="flex flex-col sm:flex-row gap-2 pt-1">
+              <!-- Search Input -->
+              <div class="relative flex-1">
+                <input type="text" id="tableSearchInput" oninput="applyTableFilter()" placeholder="Cari tanggal (contoh: Senin, 15, Oktober)..."
+                  class="w-full text-xs border border-slate-200 rounded-lg pl-8 pr-3 py-1.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-slate-50">
+                <span class="absolute left-2.5 top-1.5 text-slate-400 text-xs">🔍</span>
+              </div>
+              <!-- Status Filter Buttons -->
+              <div class="flex items-center gap-1 text-[11px] overflow-x-auto pb-0.5">
+                <button type="button" id="filterBtnAll" onclick="setTableStatusFilter('all')"
+                  class="px-2.5 py-1 rounded-lg font-bold bg-indigo-600 text-white transition shadow-xs shrink-0">
+                  Semua
+                </button>
+                <button type="button" id="filterBtnHadir" onclick="setTableStatusFilter('Hadir')"
+                  class="px-2.5 py-1 rounded-lg font-medium text-slate-600 hover:bg-slate-100 transition shrink-0">
+                  Hadir
+                </button>
+                <button type="button" id="filterBtnIzin" onclick="setTableStatusFilter('Izin')"
+                  class="px-2.5 py-1 rounded-lg font-medium text-slate-600 hover:bg-slate-100 transition shrink-0">
+                  Izin
+                </button>
+                <button type="button" id="filterBtnSakit" onclick="setTableStatusFilter('Sakit')"
+                  class="px-2.5 py-1 rounded-lg font-medium text-slate-600 hover:bg-slate-100 transition shrink-0">
+                  Sakit
+                </button>
+              </div>
             </div>
           </div>
 
@@ -857,21 +1151,79 @@
       "Juli", "Agustus", "September", "Oktober", "November", "Desember"
     ];
 
-    function showCustomAlert(msg, title = "Pemberitahuan", icon = "ℹ️") {
-      document.getElementById('customAlertTitle').innerText = title;
-      document.getElementById('customAlertMsg').innerText = msg;
-      document.getElementById('customAlertIcon').innerText = icon;
-      document.getElementById('popupCustomAlert').classList.remove('hidden');
+    // ================= TOAST NOTIFICATION SYSTEM =================
+    function showToast(msg, type = "info", title = "") {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
 
-      if (alertTimer) clearTimeout(alertTimer);
-      alertTimer = setTimeout(() => {
-        closeCustomAlert();
-      }, 3000);
+      const toast = document.createElement('div');
+
+      let icon = "ℹ️";
+      let borderBg = "bg-white border-slate-200 text-slate-800";
+      let iconBg = "bg-indigo-50 text-indigo-600";
+      let defaultTitle = "Informasi";
+
+      if (type === "success") {
+        icon = "✅";
+        borderBg = "bg-white border-emerald-200 text-slate-800";
+        iconBg = "bg-emerald-50 text-emerald-600";
+        defaultTitle = "Berhasil";
+      } else if (type === "error") {
+        icon = "❌";
+        borderBg = "bg-white border-rose-200 text-slate-800";
+        iconBg = "bg-rose-50 text-rose-600";
+        defaultTitle = "Peringatan";
+      } else if (type === "warning") {
+        icon = "⚠️";
+        borderBg = "bg-white border-amber-200 text-slate-800";
+        iconBg = "bg-amber-50 text-amber-600";
+        defaultTitle = "Perhatian";
+      }
+
+      const finalTitle = title || defaultTitle;
+
+      toast.className = `toast-enter pointer-events-auto flex items-start gap-3 p-3 rounded-xl border shadow-lg ${borderBg} transition-all duration-300`;
+      toast.innerHTML = `
+        <div class="w-8 h-8 rounded-lg ${iconBg} flex items-center justify-center text-sm font-bold shrink-0 mt-0.5">
+          ${icon}
+        </div>
+        <div class="flex-1 min-w-0 pr-1">
+          <h4 class="text-xs font-bold text-slate-900 leading-tight">${finalTitle}</h4>
+          <p class="text-[11px] text-slate-600 mt-0.5 leading-snug break-words">${msg}</p>
+        </div>
+        <button onclick="dismissToast(this.parentElement)" aria-label="Tutup" class="text-slate-400 hover:text-slate-600 text-xs font-bold leading-none p-1">
+          ✕
+        </button>
+      `;
+
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        dismissToast(toast);
+      }, 3500);
+    }
+
+    function dismissToast(toastEl) {
+      if (!toastEl || !toastEl.parentElement) return;
+      toastEl.classList.remove('toast-enter');
+      toastEl.classList.add('toast-exit');
+      setTimeout(() => {
+        if (toastEl && toastEl.parentElement) {
+          toastEl.remove();
+        }
+      }, 200);
+    }
+
+    function showCustomAlert(msg, title = "Pemberitahuan", icon = "ℹ️") {
+      let type = "info";
+      if (icon === "✅") type = "success";
+      else if (icon === "❌" || icon === "🗑️") type = "error";
+      else if (icon === "⚠️" || icon === "⏳" || icon === "🔄") type = "warning";
+      showToast(msg, type, title);
     }
 
     function closeCustomAlert() {
-      if (alertTimer) clearTimeout(alertTimer);
-      document.getElementById('popupCustomAlert').classList.add('hidden');
+      // Backwards compatible
     }
 
     function showCustomConfirm(msg, onConfirm) {
@@ -1288,10 +1640,64 @@
       });
     }
 
+    // ================= PENGATURAN STATUS PILL & SHORTCUT TANGGAL =================
+    function setQuickDate(mode) {
+      const picker = document.getElementById('inTanggalPicker');
+      const d = new Date();
+      if (mode === 'yesterday') {
+        d.setDate(d.getDate() - 1);
+      }
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      picker.value = `${yyyy}-${mm}-${dd}`;
+      syncDayWithPicker();
+    }
+
+    function selectStatus(val) {
+      const inStatus = document.getElementById('inStatus');
+      if (inStatus) inStatus.value = val;
+
+      const btnHadir = document.getElementById('btnStatusHadir');
+      const btnIzin = document.getElementById('btnStatusIzin');
+      const btnSakit = document.getElementById('btnStatusSakit');
+
+      const defaultClass = "py-1.5 px-2 rounded-md text-xs font-medium transition flex items-center justify-center gap-1 text-slate-700 hover:bg-white/60";
+
+      if (btnHadir) {
+        btnHadir.className = defaultClass;
+        btnHadir.innerHTML = "Hadir";
+      }
+      if (btnIzin) {
+        btnIzin.className = defaultClass;
+        btnIzin.innerHTML = "Izin";
+      }
+      if (btnSakit) {
+        btnSakit.className = defaultClass;
+        btnSakit.innerHTML = "Sakit";
+      }
+
+      if (val === 'Hadir' && btnHadir) {
+        btnHadir.className = "py-1.5 px-2 rounded-md text-xs font-bold transition flex items-center justify-center gap-1 bg-emerald-600 text-white shadow-xs";
+        btnHadir.innerHTML = "<span>✓</span> Hadir";
+      } else if (val === 'Izin' && btnIzin) {
+        btnIzin.className = "py-1.5 px-2 rounded-md text-xs font-bold transition flex items-center justify-center gap-1 bg-amber-500 text-white shadow-xs";
+        btnIzin.innerHTML = "<span>✓</span> Izin";
+      } else if (val === 'Sakit' && btnSakit) {
+        btnSakit.className = "py-1.5 px-2 rounded-md text-xs font-bold transition flex items-center justify-center gap-1 bg-rose-500 text-white shadow-xs";
+        btnSakit.innerHTML = "<span>✓</span> Sakit";
+      }
+
+      handleStatusChange();
+    }
+
     function handleStatusChange() {
-      const statusVal = document.getElementById('inStatus').value;
+      const inStatus = document.getElementById('inStatus');
+      const statusVal = inStatus ? inStatus.value : 'Hadir';
       const inGaji = document.getElementById('inGajiHarian');
       const inMakan = document.getElementById('inUangMakan');
+
+      if (!inGaji || !inMakan) return;
 
       if (statusVal === 'Hadir') {
         inGaji.value = currentSettings.gajiHarian;
@@ -1319,7 +1725,9 @@
       if (matchedRow) {
         document.getElementById('inHariKe').value = matchedRow.hariKe;
         if (matchedRow.status && matchedRow.status !== '-') {
-          document.getElementById('inStatus').value = matchedRow.status;
+          selectStatus(matchedRow.status);
+        } else {
+          selectStatus('Hadir');
         }
       } else {
         const firstEmpty = rawRowsData.find(r => !r.status || r.status === '-' || Number(r.totalGaji || 0) === 0);
@@ -1328,9 +1736,327 @@
         } else {
           document.getElementById('inHariKe').value = (rawRowsData.length + 1) + " Hari";
         }
+        selectStatus('Hadir');
       }
 
       handleStatusChange();
+    }
+
+    // ================= QUICK STATUS BANNER HARI INI =================
+    function checkTodayStatus() {
+      const banner = document.getElementById('todayStatusBanner');
+      const bannerIcon = document.getElementById('todayStatusIcon');
+      const bannerText = document.getElementById('todayStatusText');
+      const bannerTag = document.getElementById('todayStatusTag');
+      if (!banner || !bannerIcon || !bannerText || !bannerTag) return;
+
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      const todayIso = `${yyyy}-${mm}-${dd}`;
+      const todayFormatted = parseDateToIndoString(todayIso).toLowerCase();
+
+      let todayRow = null;
+      if (rawRowsData && rawRowsData.length > 0) {
+        rawRowsData.forEach(r => {
+          const rowDateStr = formatTgl(r.tanggal).toLowerCase();
+          if (rowDateStr === todayFormatted || rowDateStr.includes(todayFormatted) || todayFormatted.includes(rowDateStr)) {
+            todayRow = r;
+          }
+        });
+      }
+
+      if (todayRow && todayRow.status && todayRow.status !== '-' && (Number(todayRow.totalGaji || 0) > 0 || todayRow.status.toLowerCase() === 'izin' || todayRow.status.toLowerCase() === 'sakit')) {
+        banner.className = "p-2.5 rounded-xl border text-xs flex items-center justify-between gap-2 bg-emerald-50 border-emerald-200 text-emerald-900 transition-all duration-300";
+        bannerIcon.innerText = "✅";
+        bannerText.innerHTML = `Kamu sudah absen hari ini: <b>${todayRow.status}</b> (${todayRow.hariKe})`;
+        bannerTag.className = "text-[10px] px-2 py-0.5 rounded-md font-bold shrink-0 bg-emerald-200 text-emerald-800";
+        bannerTag.innerText = "Tercatat";
+      } else {
+        banner.className = "p-2.5 rounded-xl border text-xs flex items-center justify-between gap-2 bg-amber-50 border-amber-200 text-amber-900 transition-all duration-300";
+        bannerIcon.innerText = "⚠️";
+        bannerText.innerHTML = `Kamu belum absen untuk hari ini. Silakan catat presensimu.`;
+        bannerTag.className = "text-[10px] px-2 py-0.5 rounded-md font-bold shrink-0 bg-amber-200 text-amber-800";
+        bannerTag.innerText = "Belum Absen";
+      }
+    }
+
+    // ================= FILTER & SEARCH TABEL RINCIAN =================
+    let currentTableFilter = 'all';
+
+    function setTableStatusFilter(filter) {
+      currentTableFilter = filter;
+      const btns = {
+        all: document.getElementById('filterBtnAll'),
+        Hadir: document.getElementById('filterBtnHadir'),
+        Izin: document.getElementById('filterBtnIzin'),
+        Sakit: document.getElementById('filterBtnSakit')
+      };
+
+      Object.keys(btns).forEach(key => {
+        const btn = btns[key];
+        if (!btn) return;
+        if (key === filter) {
+          btn.className = "px-2.5 py-1 rounded-lg font-bold bg-indigo-600 text-white transition shadow-xs shrink-0";
+        } else {
+          btn.className = "px-2.5 py-1 rounded-lg font-medium text-slate-600 hover:bg-slate-100 transition shrink-0";
+        }
+      });
+
+      applyTableFilter();
+    }
+
+    function applyTableFilter() {
+      const searchInput = document.getElementById('tableSearchInput');
+      const searchVal = (searchInput ? searchInput.value : "").trim().toLowerCase();
+      const countEl = document.getElementById('filterResultCount');
+      const tbody = document.getElementById('tableBody');
+      if (!tbody) return;
+
+      if (!rawRowsData || rawRowsData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-slate-400">Belum ada data di bulan ini.</td></tr>';
+        if (countEl) countEl.innerText = "0 baris";
+        return;
+      }
+
+      const filtered = rawRowsData.filter(r => {
+        const statusMatch = (currentTableFilter === 'all')
+          ? true
+          : (String(r.status || '').toLowerCase() === currentTableFilter.toLowerCase());
+
+        const tglStr = formatTgl(r.tanggal).toLowerCase();
+        const hariKeStr = String(r.hariKe || '').toLowerCase();
+        const statusStr = String(r.status || '').toLowerCase();
+
+        const searchMatch = !searchVal || tglStr.includes(searchVal) || hariKeStr.includes(searchVal) || statusStr.includes(searchVal);
+
+        return statusMatch && searchMatch;
+      });
+
+      tbody.innerHTML = '';
+      if (countEl) {
+        countEl.innerText = `${filtered.length} dari ${rawRowsData.length} baris`;
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-slate-400">Tidak ada data yang sesuai dengan filter / pencarian.</td></tr>';
+        return;
+      }
+
+      filtered.forEach(r => {
+        const isFilled = String(r.status).trim() !== '' && (Number(r.totalGaji || 0) > 0 || r.status.toLowerCase() === 'izin' || r.status.toLowerCase() === 'sakit');
+        const tr = document.createElement('tr');
+        tr.className = isFilled ? "hover:bg-slate-50 transition" : "hover:bg-amber-50/50 bg-slate-50/50 text-slate-400";
+
+        let badgeColor = "bg-emerald-100 text-emerald-800";
+        if (String(r.status).toLowerCase() === 'izin') badgeColor = "bg-amber-100 text-amber-800";
+        if (String(r.status).toLowerCase() === 'sakit') badgeColor = "bg-rose-100 text-rose-800";
+
+        tr.innerHTML = `
+          <td class="py-2.5 px-3 font-medium ${isFilled ? 'text-slate-900' : 'text-slate-400'}">${formatTgl(r.tanggal)}</td>
+          <td class="py-2.5 px-2 text-slate-600">${r.hariKe}</td>
+          <td class="py-2.5 px-2">
+            ${isFilled ? `<span class="px-2 py-0.5 text-xs font-semibold rounded ${badgeColor}">${r.status}</span>` : `<span class="px-2 py-0.5 text-xs rounded bg-slate-200 text-slate-600">-</span>`}
+          </td>
+          <td class="py-3 px-3 text-right text-slate-600">${idr(r.gajiHarian)}</td>
+          <td class="py-3 px-3 text-right text-slate-600">${idr(r.uangMakan)}</td>
+          <td class="py-3 px-3 text-right font-medium ${isFilled ? 'text-slate-900' : 'text-slate-400'}">${idr(r.totalGaji)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // ================= MODAL SLIP GAJI & CETAK PRINT =================
+    function openSlipModal() {
+      const year = document.getElementById('yearSelect').value;
+      const month = document.getElementById('monthSelect').value;
+      const activeUser = sessionStorage.getItem('activeLoggedInUser') || "Karyawan";
+      const activeRole = (sessionStorage.getItem('activeLoggedInRole') || "User").toUpperCase();
+
+      const isPeriodGapok = (year === "2027") || /september|oktober|november|desember/i.test(month);
+      const gajiPokokVal = isPeriodGapok ? currentSettings.gajiPokok : 0;
+      const adminFee = Number(currentSettings.adminFee) || 0;
+
+      let hitungHadir = 0;
+      let hitungIzin = 0;
+      let hitungSakit = 0;
+      let hitungMakan = 0;
+      let hitungGaji = 0;
+
+      if (rawRowsData && rawRowsData.length > 0) {
+        rawRowsData.forEach(r => {
+          const st = String(r.status || '').trim().toLowerCase();
+          if (st === 'hadir' && Number(r.totalGaji || 0) > 0) {
+            hitungHadir++;
+            hitungMakan += Number(r.uangMakan || 0);
+            hitungGaji += Number(r.gajiHarian || 0);
+          } else if (st === 'izin') {
+            hitungIzin++;
+          } else if (st === 'sakit') {
+            hitungSakit++;
+          }
+        });
+      }
+
+      const totalKotor = gajiPokokVal + hitungMakan + hitungGaji;
+      let finalTHP = isPeriodGapok
+        ? (gajiPokokVal - adminFee) + (hitungMakan + hitungGaji)
+        : (hitungMakan + hitungGaji > 0 ? (hitungMakan + hitungGaji - adminFee) : 0);
+
+      document.getElementById('slipNamaUser').innerText = activeUser;
+      document.getElementById('slipRole').innerText = activeRole;
+      document.getElementById('slipPeriode').innerText = `${month} ${year}`;
+      document.getElementById('slipRekapHadir').innerText = `${hitungHadir} Hadir • ${hitungIzin} Izin • ${hitungSakit} Sakit`;
+      document.getElementById('slipPrintTgl').innerText = "Dicetak: " + new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+
+      const rowGapok = document.getElementById('slipRowGapok');
+      if (isPeriodGapok) {
+        if (rowGapok) rowGapok.classList.remove('hidden');
+        document.getElementById('slipValGapok').innerText = idr(gajiPokokVal);
+      } else {
+        if (rowGapok) rowGapok.classList.add('hidden');
+      }
+
+      document.getElementById('slipQtyGaji').innerText = `${hitungHadir} Hari`;
+      document.getElementById('slipValGaji').innerText = idr(hitungGaji);
+
+      document.getElementById('slipQtyMakan').innerText = `${hitungHadir} Hari`;
+      document.getElementById('slipValMakan').innerText = idr(hitungMakan);
+
+      document.getElementById('slipValKotor').innerText = idr(totalKotor);
+      document.getElementById('slipValPajak').innerText = idr(adminFee);
+      document.getElementById('slipValTHP').innerText = idr(finalTHP);
+
+      document.getElementById('slipTtdNama').innerText = `( ${activeUser} )`;
+
+      document.getElementById('slipGajiModal').classList.remove('hidden');
+    }
+
+    function closeSlipModal() {
+      document.getElementById('slipGajiModal').classList.add('hidden');
+    }
+
+    function printSlip() {
+      window.print();
+    }
+
+    // ================= NETWORK STATUS MONITORING =================
+    function updateNetworkStatus() {
+      const isOnline = navigator.onLine;
+      const badge = document.getElementById('networkStatusBadge');
+      const dot = document.getElementById('networkStatusDot');
+      const text = document.getElementById('networkStatusText');
+
+      if (!badge || !dot || !text) return;
+
+      if (isOnline) {
+        badge.className = "inline-flex items-center gap-1 text-[8px] sm:text-[9px] font-semibold bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-full border border-emerald-400/30";
+        dot.className = "w-1.5 h-1.5 rounded-full bg-emerald-400";
+        text.innerText = "Online";
+      } else {
+        badge.className = "inline-flex items-center gap-1 text-[8px] sm:text-[9px] font-semibold bg-rose-500/20 text-rose-300 px-1.5 py-0.5 rounded-full border border-rose-400/30";
+        dot.className = "w-1.5 h-1.5 rounded-full bg-rose-400";
+        text.innerText = "Offline";
+      }
+    }
+
+    window.addEventListener('online', () => {
+      updateNetworkStatus();
+      showToast("Koneksi internet kembali aktif!", "success", "Online");
+      triggerManualSync();
+    });
+
+    window.addEventListener('offline', () => {
+      updateNetworkStatus();
+      showToast("Perangkat sedang offline. Fitur tetap berjalan dengan data tersimpan.", "warning", "Mode Offline");
+    });
+
+    // ================= DATA PROCESSING & RENDERING =================
+    function processAndRenderData(year, month, rows) {
+      let hitungHari = 0;
+      let hitungIzin = 0;
+      let hitungSakit = 0;
+      let hitungMakan = 0;
+      let hitungGaji = 0;
+
+      const isPeriodGapok = (year === "2027") || /september|oktober|november|desember/i.test(month);
+      const cardGapok = document.getElementById('cardGapok');
+      const kpiContainer = document.getElementById('kpiContainer');
+      const cardTHP = document.getElementById('cardTHP');
+
+      let gajiPokokVal = 0;
+      let adminFee = Number(currentSettings.adminFee) || 0;
+
+      if (isPeriodGapok) {
+        if (cardGapok) cardGapok.classList.remove('hidden');
+        if (kpiContainer) kpiContainer.className = "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-2.5 lg:gap-3";
+        if (cardTHP) {
+          cardTHP.className = "bg-gradient-to-br from-indigo-50/90 via-white to-indigo-50/50 p-2.5 sm:py-2.5 sm:px-3 rounded-xl border border-indigo-200 shadow-xs hover:shadow-sm transition flex flex-col justify-between col-span-2 sm:col-span-1";
+        }
+        gajiPokokVal = currentSettings.gajiPokok;
+        const statGapok = document.getElementById('statGapok');
+        if (statGapok) statGapok.innerText = idr(gajiPokokVal);
+      } else {
+        if (cardGapok) cardGapok.classList.add('hidden');
+        if (kpiContainer) kpiContainer.className = "grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5 lg:gap-3";
+        if (cardTHP) {
+          cardTHP.className = "bg-gradient-to-br from-indigo-50/90 via-white to-indigo-50/50 p-2.5 sm:py-2.5 sm:px-3 rounded-xl border border-indigo-200 shadow-xs hover:shadow-sm transition flex flex-col justify-between col-span-1 sm:col-span-1";
+        }
+      }
+
+      if (rows && rows.length > 0) {
+        rows.forEach(r => {
+          const st = String(r.status || '').trim().toLowerCase();
+          const hasGaji = Number(r.totalGaji || 0) > 0;
+
+          if (st === 'hadir' && hasGaji) {
+            hitungHari++;
+            hitungMakan += Number(r.uangMakan || 0);
+            hitungGaji += Number(r.gajiHarian || 0);
+          } else if (st === 'izin') {
+            hitungIzin++;
+          } else if (st === 'sakit') {
+            hitungSakit++;
+          }
+        });
+      }
+
+      handleStatusChange();
+
+      let finalTHP = 0;
+      if (isPeriodGapok) {
+        finalTHP = (gajiPokokVal - adminFee) + (hitungMakan + hitungGaji);
+      } else {
+        finalTHP = (hitungMakan + hitungGaji > 0) ? (hitungMakan + hitungGaji - adminFee) : 0;
+      }
+
+      const statHari = document.getElementById('statHari');
+      const countIzin = document.getElementById('countIzin');
+      const countSakit = document.getElementById('countSakit');
+      const statMakan = document.getElementById('statMakan');
+      const statGajiHarian = document.getElementById('statGajiHarian');
+      const statTHP = document.getElementById('statTHP');
+      const statKetAdmin = document.getElementById('statKetAdmin');
+
+      if (statHari) statHari.innerText = hitungHari + " Hari";
+      if (countIzin) countIzin.innerText = hitungIzin;
+      if (countSakit) countSakit.innerText = hitungSakit;
+      if (statMakan) statMakan.innerText = idr(hitungMakan);
+      if (statGajiHarian) statGajiHarian.innerText = idr(hitungGaji);
+      if (statTHP) statTHP.innerText = idr(finalTHP);
+
+      if (statKetAdmin) {
+        if (adminFee > 0) {
+          statKetAdmin.innerText = `Setelah Pajak ${idr(adminFee)}`;
+        } else {
+          statKetAdmin.innerText = `Pajak: Rp0`;
+        }
+      }
+
+      applyTableFilter();
+      checkTodayStatus();
+      syncDayWithPicker();
     }
 
     function handleYearChange() {
@@ -1338,13 +2064,15 @@
     }
 
     async function initDashboard() {
+      updateNetworkStatus();
       const year = document.getElementById('yearSelect').value;
       const today = new Date().toISOString().split('T')[0];
       const picker = document.getElementById('inTanggalPicker');
-      picker.value = today;
-
-      picker.addEventListener('change', syncDayWithPicker);
-      document.getElementById('inStatus').addEventListener('change', handleStatusChange);
+      if (picker) {
+        picker.value = today;
+        picker.removeEventListener('change', syncDayWithPicker);
+        picker.addEventListener('change', syncDayWithPicker);
+      }
 
       try {
         const response = await fetch(`${SCRIPT_URL}?action=getMonths&year=${year}`);
@@ -1369,117 +2097,54 @@
         sel.selectedIndex = matchedIndex;
         await loadMonthData();
       } catch (err) {
-        showCustomAlert("Gagal memuat daftar bulan: " + err.message, "Error Koneksi", "❌");
+        showToast("Gagal memuat daftar bulan: " + err.message, "error", "Error Koneksi");
       }
     }
 
     async function loadMonthData() {
       const year = document.getElementById('yearSelect').value;
       const month = document.getElementById('monthSelect').value;
-      document.getElementById('labelSheet').innerText = `${month} ${year}`;
+      const labelSheet = document.getElementById('labelSheet');
+      if (labelSheet) labelSheet.innerText = `${month} ${year}`;
+
+      const cacheKey = `sigap_cache_${year}_${month}`;
+      const cached = localStorage.getItem(cacheKey);
+
+      // Caching / Offline Fallback: Tampilkan data dari cache terlebih dahulu agar instan
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            rawRowsData = parsed;
+            processAndRenderData(year, month, rawRowsData);
+          }
+        } catch (e) {
+          console.warn("Gagal membaca cache:", e);
+        }
+      }
 
       const tbody = document.getElementById('tableBody');
-      tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-slate-400">Memuat rincian data...</td></tr>';
+      if (!cached && tbody) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-slate-400">Memuat rincian data...</td></tr>';
+      }
 
       try {
         const response = await fetch(`${SCRIPT_URL}?action=getData&year=${year}&month=${encodeURIComponent(month)}`);
         const res = await response.json();
 
         rawRowsData = res.rows || [];
+        localStorage.setItem(cacheKey, JSON.stringify(rawRowsData));
 
-        let hitungHari = 0;
-        let hitungMakan = 0;
-        let hitungGaji = 0;
-
-        const isPeriodGapok = (year === "2027") || /september|oktober|november|desember/i.test(month);
-        const cardGapok = document.getElementById('cardGapok');
-        const kpiContainer = document.getElementById('kpiContainer');
-        const cardTHP = document.getElementById('cardTHP');
-
-        let gajiPokokVal = 0;
-        let adminFee = Number(currentSettings.adminFee) || 0;
-
-        if (isPeriodGapok) {
-          cardGapok.classList.remove('hidden');
-          kpiContainer.className = "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-2.5 lg:gap-3";
-          if (cardTHP) {
-            cardTHP.className = "bg-gradient-to-br from-indigo-50/90 via-white to-indigo-50/50 p-2.5 sm:py-2.5 sm:px-3 rounded-xl border border-indigo-200 shadow-xs hover:shadow-sm transition flex flex-col justify-between col-span-2 sm:col-span-1";
-          }
-          gajiPokokVal = currentSettings.gajiPokok;
-          document.getElementById('statGapok').innerText = idr(gajiPokokVal);
-        } else {
-          cardGapok.classList.add('hidden');
-          kpiContainer.className = "grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5 lg:gap-3";
-          if (cardTHP) {
-            cardTHP.className = "bg-gradient-to-br from-indigo-50/90 via-white to-indigo-50/50 p-2.5 sm:py-2.5 sm:px-3 rounded-xl border border-indigo-200 shadow-xs hover:shadow-sm transition flex flex-col justify-between col-span-1 sm:col-span-1";
-          }
-        }
-
-        if (res.rows && res.rows.length > 0) {
-          res.rows.forEach(r => {
-            const isHadir = String(r.status).trim().toLowerCase() === 'hadir';
-            const hasGaji = Number(r.totalGaji || 0) > 0;
-
-            if (isHadir && hasGaji) {
-              hitungHari++;
-              hitungMakan += Number(r.uangMakan || 0);
-              hitungGaji += Number(r.gajiHarian || 0);
-            }
-          });
-        }
-
-        handleStatusChange();
-
-        let finalTHP = 0;
-        if (isPeriodGapok) {
-          finalTHP = (gajiPokokVal - adminFee) + (hitungMakan + hitungGaji);
-        } else {
-          finalTHP = (hitungMakan + hitungGaji > 0) ? (hitungMakan + hitungGaji - adminFee) : 0;
-        }
-
-        document.getElementById('statHari').innerText = hitungHari + " Hari";
-        document.getElementById('statMakan').innerText = idr(hitungMakan);
-        document.getElementById('statGajiHarian').innerText = idr(hitungGaji);
-        document.getElementById('statTHP').innerText = idr(finalTHP);
-        if (adminFee > 0) {
-          document.getElementById('statKetAdmin').innerText = `Setelah Pajak ${idr(adminFee)}`;
-        } else {
-          document.getElementById('statKetAdmin').innerText = `Pajak: Rp0`;
-        }
-
-        tbody.innerHTML = '';
-        if (!res.rows || res.rows.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-slate-400">Belum ada data di bulan ini.</td></tr>';
-          return;
-        }
-
-        res.rows.forEach(r => {
-          const isFilled = String(r.status).trim() !== '' && (Number(r.totalGaji || 0) > 0 || r.status.toLowerCase() === 'izin' || r.status.toLowerCase() === 'sakit');
-          const tr = document.createElement('tr');
-          tr.className = isFilled ? "hover:bg-slate-50 transition" : "hover:bg-amber-50/50 bg-slate-50/50 text-slate-400";
-
-          let badgeColor = "bg-emerald-100 text-emerald-800";
-          if (String(r.status).toLowerCase() === 'izin') badgeColor = "bg-amber-100 text-amber-800";
-          if (String(r.status).toLowerCase() === 'sakit') badgeColor = "bg-rose-100 text-rose-800";
-
-          tr.innerHTML = `
-            <td class="py-2.5 px-3 font-medium ${isFilled ? 'text-slate-900' : 'text-slate-400'}">${formatTgl(r.tanggal)}</td>
-            <td class="py-2.5 px-2 text-slate-600">${r.hariKe}</td>
-            <td class="py-2.5 px-2">
-              ${isFilled ? `<span class="px-2 py-0.5 text-xs font-semibold rounded ${badgeColor}">${r.status}</span>` : `<span class="px-2 py-0.5 text-xs rounded bg-slate-200 text-slate-600">-</span>`}
-            </td>
-            <td class="py-3 px-3 text-right text-slate-600">${idr(r.gajiHarian)}</td>
-            <td class="py-3 px-3 text-right text-slate-600">${idr(r.uangMakan)}</td>
-            <td class="py-3 px-3 text-right font-medium ${isFilled ? 'text-slate-900' : 'text-slate-400'}">${idr(r.totalGaji)}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-
-        syncDayWithPicker();
-
+        processAndRenderData(year, month, rawRowsData);
       } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-red-500">Gagal menarik data: ${err.message}</td></tr>`;
-        throw err;
+        if (cached && rawRowsData.length > 0) {
+          showToast("Koneksi offline: Menampilkan data tersimpan terakhir.", "warning", "Mode Offline");
+        } else {
+          if (tbody) {
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-red-500">Gagal menarik data: ${err.message}</td></tr>`;
+          }
+          throw err;
+        }
       }
     }
 
@@ -1487,7 +2152,7 @@
       e.preventDefault();
       const btn = document.getElementById('btnSubmit');
       btn.disabled = true;
-      btn.innerText = "Menyimpan...";
+      btn.innerHTML = `<span>⏳ Menyimpan...</span>`;
 
       const datePickerVal = document.getElementById('inTanggalPicker').value;
       const formattedDateString = parseDateToIndoString(datePickerVal);
@@ -1510,16 +2175,16 @@
           body: JSON.stringify(payload)
         });
 
-        showCustomAlert("Data Log Kehadiran Telah Disimpan!", "Absen Berhasil!", "✅");
+        showToast("Data log kehadiran berhasil disimpan!", "success", "Absen Berhasil");
 
         btn.disabled = false;
-        btn.innerText = "Simpan Absensi";
+        btn.innerHTML = `<span>Simpan Absensi</span>`;
 
-        setTimeout(loadMonthData, 1500);
+        setTimeout(loadMonthData, 1200);
       } catch (err) {
-        showCustomAlert("Gagal menyimpan data: " + err.message, "Gagal Absen", "❌");
+        showToast("Gagal menyimpan data: " + err.message, "error", "Gagal Absen");
         btn.disabled = false;
-        btn.innerText = "Simpan Absensi";
+        btn.innerHTML = `<span>Simpan Absensi</span>`;
       }
     }
 
