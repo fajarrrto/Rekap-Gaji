@@ -293,8 +293,8 @@
               <input type="number" id="cfgGajiPokok" class="w-full text-xs border border-slate-300 rounded-lg p-2">
             </div>
             <div>
-              <label class="block text-[11px] text-slate-500 mb-1">Potongan Admin (Rp)</label>
-              <input type="number" id="cfgAdminFee" class="w-full text-xs border border-slate-300 rounded-lg p-2">
+              <label class="block text-[11px] text-slate-500 mb-1">Potongan Pajak (Rp)</label>
+              <input type="number" id="cfgAdminFee" placeholder="0" class="w-full text-xs border border-slate-300 rounded-lg p-2">
             </div>
           </div>
         </div>
@@ -437,7 +437,10 @@
     <div class="p-3.5 border-t border-slate-100 bg-slate-50/80 space-y-2">
       <button onclick="handleLogout()"
         class="w-full py-2.5 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 active:bg-rose-200 text-rose-700 border border-rose-200 text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 shadow-xs">
-        <span>🚪</span>
+        <svg class="w-4 h-4 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
+          <line x1="12" y1="2" x2="12" y2="12" />
+        </svg>
         <span>Keluar (Logout)</span>
       </button>
       <p class="text-[10px] text-center text-slate-400">SIGAP v2.4 • Presensi & Gaji</p>
@@ -470,7 +473,7 @@
           </div>
         </div>
 
-        <!-- Controls: Bulan/Tahun + Sync + Logout + Hamburger Menu Button -->
+        <!-- Controls: Bulan/Tahun + Sync + Logout (Logo Power) + Hamburger Menu Button -->
         <div class="flex items-center space-x-1 sm:space-x-1.5">
           <!-- Month & Year Selector (Compact Pill) -->
           <div class="flex items-center bg-indigo-800/90 rounded-lg p-0.5 border border-indigo-500/60 shadow-xs">
@@ -487,16 +490,18 @@
 
           <!-- Quick Sync Button -->
           <button id="btnSyncSheet" onclick="triggerManualSync()" title="Sinkronkan Google Sheets"
-            class="bg-indigo-800/90 hover:bg-indigo-900 active:bg-indigo-950 text-xs p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg text-indigo-100 hover:text-white transition flex items-center justify-center border border-indigo-500/50 shadow-xs">
+            class="bg-indigo-800/90 hover:bg-indigo-900 active:bg-indigo-950 text-xs p-1.5 sm:px-2 sm:py-1.5 rounded-lg text-indigo-100 hover:text-white transition flex items-center justify-center border border-indigo-500/50 shadow-xs">
             <span id="syncIcon" class="inline-block transition-transform duration-500 text-xs">🔄</span>
             <span class="hidden md:inline ml-1 text-xs font-medium">Sync</span>
           </button>
 
-          <!-- Tombol Logout Langsung di Top Menu Bar (Icon di HP, Icon+Teks di PC) -->
-          <button onclick="handleLogout()" title="Keluar / Logout"
-            class="bg-rose-600/90 hover:bg-rose-700 active:bg-rose-800 text-xs p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg text-white transition flex items-center justify-center gap-1 border border-rose-500/60 shadow-xs font-semibold">
-            <span class="text-xs">🚪</span>
-            <span class="hidden sm:inline text-xs">Logout</span>
+          <!-- Tombol Logout dengan Logo Power -->
+          <button onclick="handleLogout()" title="Keluar / Logout" aria-label="Logout"
+            class="bg-rose-600/90 hover:bg-rose-700 active:bg-rose-800 text-white p-1.5 sm:p-2 rounded-lg transition flex items-center justify-center border border-rose-500/60 shadow-xs">
+            <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
+              <line x1="12" y1="2" x2="12" y2="12" />
+            </svg>
           </button>
 
           <!-- Hamburger Button: Membuka Sidebar Menu (Gambar 1) -->
@@ -575,7 +580,7 @@
             </div>
             <div class="mt-0.5 sm:mt-1">
               <h3 id="statTHP" class="text-base sm:text-lg lg:text-xl font-black text-indigo-700 leading-tight">Rp0</h3>
-              <span id="statKetAdmin" class="text-[10px] sm:text-[11px] text-slate-500 font-medium">Setelah Admin Rp5.000</span>
+              <span id="statKetAdmin" class="text-[10px] sm:text-[11px] text-slate-500 font-medium">Pajak: Rp0</span>
             </div>
           </div>
         </section>
@@ -823,11 +828,17 @@
     }
     ensureAccounts();
 
+    let savedTaxFee = localStorage.getItem('cfg_adminFee');
+    if (savedTaxFee === null || savedTaxFee === '5000') {
+      savedTaxFee = '0';
+      localStorage.setItem('cfg_adminFee', '0');
+    }
+
     let currentSettings = {
       gajiHarian: Number(localStorage.getItem('cfg_gajiHarian')) || 37500,
       uangMakan: Number(localStorage.getItem('cfg_uangMakan')) || 37500,
       gajiPokok: Number(localStorage.getItem('cfg_gajiPokok')) || 3500000,
-      adminFee: Number(localStorage.getItem('cfg_adminFee')) || 5000,
+      adminFee: Number(savedTaxFee) || 0,
       showForm: localStorage.getItem('cfg_showForm') !== 'false',
       showKpi: localStorage.getItem('cfg_showKpi') !== 'false',
       allowExport: localStorage.getItem('cfg_allowExport') !== 'false',
@@ -1386,7 +1397,7 @@
         const cardTHP = document.getElementById('cardTHP');
 
         let gajiPokokVal = 0;
-        let adminFee = 0;
+        let adminFee = Number(currentSettings.adminFee) || 0;
 
         if (isPeriodGapok) {
           cardGapok.classList.remove('hidden');
@@ -1395,7 +1406,6 @@
             cardTHP.className = "bg-gradient-to-br from-indigo-50/90 via-white to-indigo-50/50 p-2.5 sm:py-2.5 sm:px-3 rounded-xl border border-indigo-200 shadow-xs hover:shadow-sm transition flex flex-col justify-between col-span-2 sm:col-span-1";
           }
           gajiPokokVal = currentSettings.gajiPokok;
-          adminFee = currentSettings.adminFee;
           document.getElementById('statGapok').innerText = idr(gajiPokokVal);
         } else {
           cardGapok.classList.add('hidden');
@@ -1403,7 +1413,6 @@
           if (cardTHP) {
             cardTHP.className = "bg-gradient-to-br from-indigo-50/90 via-white to-indigo-50/50 p-2.5 sm:py-2.5 sm:px-3 rounded-xl border border-indigo-200 shadow-xs hover:shadow-sm transition flex flex-col justify-between col-span-1 sm:col-span-1";
           }
-          adminFee = 2500;
         }
 
         if (res.rows && res.rows.length > 0) {
@@ -1432,7 +1441,11 @@
         document.getElementById('statMakan').innerText = idr(hitungMakan);
         document.getElementById('statGajiHarian').innerText = idr(hitungGaji);
         document.getElementById('statTHP').innerText = idr(finalTHP);
-        document.getElementById('statKetAdmin').innerText = `Setelah Admin ${idr(adminFee)}`;
+        if (adminFee > 0) {
+          document.getElementById('statKetAdmin').innerText = `Setelah Pajak ${idr(adminFee)}`;
+        } else {
+          document.getElementById('statKetAdmin').innerText = `Pajak: Rp0`;
+        }
 
         tbody.innerHTML = '';
         if (!res.rows || res.rows.length === 0) {
