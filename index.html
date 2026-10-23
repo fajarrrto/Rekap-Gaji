@@ -450,7 +450,7 @@
     <header class="bg-indigo-700 text-white shadow-md sticky top-0 z-30">
       <div class="max-w-6xl mx-auto px-3 sm:px-4 py-2 sm:py-2.5 flex justify-between items-center gap-2">
         <!-- Logo & User Badge -->
-        <div class="flex items-center space-x-2">
+        <div class="flex items-center space-x-2 shrink-0">
           <div
             class="w-8 h-8 rounded-lg bg-indigo-800 border border-indigo-500/50 flex items-center justify-center p-1.5 shadow-xs shrink-0">
             <svg class="w-full h-full" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -466,16 +466,16 @@
               <span class="text-sm sm:text-base font-black tracking-tight leading-none text-white">SIGAP</span>
               <span id="activeUserBadge" class="text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-full font-bold"></span>
             </div>
-            <span class="text-[8px] sm:text-[10px] text-indigo-200 font-medium leading-tight mt-0.5">Sistem Gaji & Presensi</span>
+            <span class="hidden sm:inline text-[9px] sm:text-[10px] text-indigo-200 font-medium leading-tight mt-0.5">Sistem Gaji & Presensi</span>
           </div>
         </div>
 
-        <!-- Controls: Bulan/Tahun + Sync + Hamburger Menu Button -->
-        <div class="flex items-center space-x-1.5 sm:space-x-2">
+        <!-- Controls: Bulan/Tahun + Sync + Logout + Hamburger Menu Button -->
+        <div class="flex items-center space-x-1 sm:space-x-1.5">
           <!-- Month & Year Selector (Compact Pill) -->
           <div class="flex items-center bg-indigo-800/90 rounded-lg p-0.5 border border-indigo-500/60 shadow-xs">
             <select id="monthSelect" onchange="loadMonthData()"
-              class="bg-transparent text-white text-[11px] sm:text-xs font-semibold px-2 py-1 focus:outline-none cursor-pointer">
+              class="bg-transparent text-white text-[11px] sm:text-xs font-semibold px-1.5 sm:px-2 py-1 focus:outline-none cursor-pointer">
               <option>Memuat...</option>
             </select>
             <select id="yearSelect" onchange="handleYearChange()"
@@ -487,88 +487,95 @@
 
           <!-- Quick Sync Button -->
           <button id="btnSyncSheet" onclick="triggerManualSync()" title="Sinkronkan Google Sheets"
-            class="bg-indigo-800/90 hover:bg-indigo-900 text-xs p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg text-indigo-100 hover:text-white transition flex items-center justify-center border border-indigo-500/50 shadow-xs">
+            class="bg-indigo-800/90 hover:bg-indigo-900 active:bg-indigo-950 text-xs p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg text-indigo-100 hover:text-white transition flex items-center justify-center border border-indigo-500/50 shadow-xs">
             <span id="syncIcon" class="inline-block transition-transform duration-500 text-xs">🔄</span>
-            <span class="hidden md:inline ml-1 text-xs">Sync</span>
+            <span class="hidden md:inline ml-1 text-xs font-medium">Sync</span>
+          </button>
+
+          <!-- Tombol Logout Langsung di Top Menu Bar (Icon di HP, Icon+Teks di PC) -->
+          <button onclick="handleLogout()" title="Keluar / Logout"
+            class="bg-rose-600/90 hover:bg-rose-700 active:bg-rose-800 text-xs p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg text-white transition flex items-center justify-center gap-1 border border-rose-500/60 shadow-xs font-semibold">
+            <span class="text-xs">🚪</span>
+            <span class="hidden sm:inline text-xs">Logout</span>
           </button>
 
           <!-- Hamburger Button: Membuka Sidebar Menu (Gambar 1) -->
           <button id="btnOpenSidebar" onclick="openSidebar()" aria-label="Buka Menu"
-            class="bg-indigo-800/90 hover:bg-indigo-900 active:bg-indigo-950 text-white p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg border border-indigo-500/50 transition flex items-center gap-1 shadow-xs">
-            <svg class="w-5 h-5 text-indigo-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            class="bg-indigo-800/90 hover:bg-indigo-900 active:bg-indigo-950 text-white p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg border border-indigo-500/50 transition flex items-center gap-1 shadow-xs font-semibold">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-indigo-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
-            <span class="hidden sm:inline text-xs font-semibold">Menu</span>
+            <span class="hidden sm:inline text-xs">Menu</span>
           </button>
         </div>
       </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-3 sm:px-4 mt-3 sm:mt-5 space-y-4">
+    <main class="max-w-6xl mx-auto px-3 sm:px-4 mt-3 sm:mt-4 space-y-3 sm:space-y-4">
 
       <!-- ================= TAMPILAN 1: DASHBOARD ABSENSI (HANYA GAMBAR 2 & GAMBAR 3) ================= -->
-      <div id="viewDashboardSection" class="space-y-3.5 sm:space-y-5">
+      <div id="viewDashboardSection" class="space-y-3 sm:space-y-4">
 
-        <!-- GAMBAR 2: KPI Ringkasan Gaji (Compact Mobile & Desktop) -->
-        <section id="kpiContainer" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3.5">
+        <!-- GAMBAR 2: KPI Ringkasan Gaji (Ultra Compact PC/Laptop & Mobile) -->
+        <section id="kpiContainer" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-2.5 lg:gap-3">
           <!-- 1. KEHADIRAN -->
-          <div class="bg-white p-2.5 sm:p-4 rounded-xl border border-slate-200/90 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
+          <div class="bg-white p-2.5 sm:py-2.5 sm:px-3 rounded-xl border border-slate-200/90 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
             <div class="flex items-center justify-between">
-              <p class="text-[10px] sm:text-xs font-semibold uppercase text-slate-500 tracking-wider">Kehadiran</p>
-              <span class="text-xs">📅</span>
+              <p class="text-[10px] sm:text-[11px] font-semibold uppercase text-slate-500 tracking-wider">Kehadiran</p>
+              <span class="text-xs sm:text-sm">📅</span>
             </div>
-            <div class="mt-1">
-              <h3 id="statHari" class="text-base sm:text-2xl font-black text-slate-900 leading-tight">-</h3>
-              <span class="text-[10px] sm:text-xs text-emerald-600 font-semibold inline-flex items-center gap-0.5">Hari Masuk</span>
+            <div class="mt-0.5 sm:mt-1">
+              <h3 id="statHari" class="text-base sm:text-lg lg:text-xl font-black text-slate-900 leading-tight">-</h3>
+              <span class="text-[10px] sm:text-[11px] text-emerald-600 font-semibold inline-flex items-center gap-0.5">Hari Masuk</span>
             </div>
           </div>
 
           <!-- 2. UANG MAKAN -->
-          <div class="bg-white p-2.5 sm:p-4 rounded-xl border border-slate-200/90 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
+          <div class="bg-white p-2.5 sm:py-2.5 sm:px-3 rounded-xl border border-slate-200/90 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
             <div class="flex items-center justify-between">
-              <p class="text-[10px] sm:text-xs font-semibold uppercase text-slate-500 tracking-wider">Uang Makan</p>
-              <span class="text-xs">🍲</span>
+              <p class="text-[10px] sm:text-[11px] font-semibold uppercase text-slate-500 tracking-wider">Uang Makan</p>
+              <span class="text-xs sm:text-sm">🍲</span>
             </div>
-            <div class="mt-1">
-              <h3 id="statMakan" class="text-sm sm:text-2xl font-black text-slate-900 leading-tight">Rp0</h3>
-              <span class="text-[10px] sm:text-xs text-slate-400 font-medium">Akumulasi</span>
+            <div class="mt-0.5 sm:mt-1">
+              <h3 id="statMakan" class="text-sm sm:text-lg lg:text-xl font-black text-slate-900 leading-tight">Rp0</h3>
+              <span class="text-[10px] sm:text-[11px] text-slate-400 font-medium">Akumulasi</span>
             </div>
           </div>
 
           <!-- 3. GAJI HARIAN -->
-          <div class="bg-white p-2.5 sm:p-4 rounded-xl border border-slate-200/90 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
+          <div class="bg-white p-2.5 sm:py-2.5 sm:px-3 rounded-xl border border-slate-200/90 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
             <div class="flex items-center justify-between">
-              <p class="text-[10px] sm:text-xs font-semibold uppercase text-slate-500 tracking-wider">Gaji Harian</p>
-              <span class="text-xs">💼</span>
+              <p class="text-[10px] sm:text-[11px] font-semibold uppercase text-slate-500 tracking-wider">Gaji Harian</p>
+              <span class="text-xs sm:text-sm">💼</span>
             </div>
-            <div class="mt-1">
-              <h3 id="statGajiHarian" class="text-sm sm:text-2xl font-black text-slate-900 leading-tight">Rp0</h3>
-              <span class="text-[10px] sm:text-xs text-slate-400 font-medium">Akumulasi</span>
+            <div class="mt-0.5 sm:mt-1">
+              <h3 id="statGajiHarian" class="text-sm sm:text-lg lg:text-xl font-black text-slate-900 leading-tight">Rp0</h3>
+              <span class="text-[10px] sm:text-[11px] text-slate-400 font-medium">Akumulasi</span>
             </div>
           </div>
 
           <!-- 4. GAJI POKOK -->
-          <div id="cardGapok" class="bg-white p-2.5 sm:p-4 rounded-xl border border-slate-200/90 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
+          <div id="cardGapok" class="bg-white p-2.5 sm:py-2.5 sm:px-3 rounded-xl border border-slate-200/90 shadow-xs hover:shadow-sm transition flex flex-col justify-between">
             <div class="flex items-center justify-between">
-              <p class="text-[10px] sm:text-xs font-semibold uppercase text-slate-500 tracking-wider">Gaji Pokok</p>
-              <span class="text-xs">🏦</span>
+              <p class="text-[10px] sm:text-[11px] font-semibold uppercase text-slate-500 tracking-wider">Gaji Pokok</p>
+              <span class="text-xs sm:text-sm">🏦</span>
             </div>
-            <div class="mt-1">
-              <h3 id="statGapok" class="text-sm sm:text-2xl font-black text-slate-900 leading-tight">Rp3.500.000</h3>
-              <span class="text-[10px] sm:text-xs text-emerald-600 font-semibold">Tetap Bulanan</span>
+            <div class="mt-0.5 sm:mt-1">
+              <h3 id="statGapok" class="text-sm sm:text-lg lg:text-xl font-black text-slate-900 leading-tight">Rp3.500.000</h3>
+              <span class="text-[10px] sm:text-[11px] text-emerald-600 font-semibold">Tetap Bulanan</span>
             </div>
           </div>
 
           <!-- 5. TAKE HOME PAY -->
           <div id="cardTHP"
-            class="bg-gradient-to-br from-indigo-50/90 via-white to-indigo-50/50 p-2.5 sm:p-4 rounded-xl border border-indigo-200 shadow-xs hover:shadow-sm transition flex flex-col justify-between col-span-2 sm:col-span-1">
+            class="bg-gradient-to-br from-indigo-50/90 via-white to-indigo-50/50 p-2.5 sm:py-2.5 sm:px-3 rounded-xl border border-indigo-200 shadow-xs hover:shadow-sm transition flex flex-col justify-between col-span-2 sm:col-span-1">
             <div class="flex items-center justify-between">
-              <p class="text-[10px] sm:text-xs font-bold uppercase text-indigo-700 tracking-wider">Take Home Pay</p>
-              <span class="text-xs">💰</span>
+              <p class="text-[10px] sm:text-[11px] font-bold uppercase text-indigo-700 tracking-wider">Take Home Pay</p>
+              <span class="text-xs sm:text-sm">💰</span>
             </div>
-            <div class="mt-1">
-              <h3 id="statTHP" class="text-base sm:text-2xl font-black text-indigo-700 leading-tight">Rp0</h3>
-              <span id="statKetAdmin" class="text-[10px] sm:text-xs text-slate-500 font-medium">Setelah Admin Rp5.000</span>
+            <div class="mt-0.5 sm:mt-1">
+              <h3 id="statTHP" class="text-base sm:text-lg lg:text-xl font-black text-indigo-700 leading-tight">Rp0</h3>
+              <span id="statKetAdmin" class="text-[10px] sm:text-[11px] text-slate-500 font-medium">Setelah Admin Rp5.000</span>
             </div>
           </div>
         </section>
@@ -627,13 +634,6 @@
                 Simpan Absensi
               </button>
             </form>
-
-            <!-- Tombol Cepat Menuju Rincian Hari Kerja -->
-            <button type="button" onclick="switchView('rincian')"
-              class="w-full mt-3 py-2 px-3 text-xs sm:text-sm font-semibold text-indigo-700 bg-indigo-50/70 hover:bg-indigo-100/80 border border-indigo-200/80 rounded-xl transition flex items-center justify-center gap-1.5 shadow-xs">
-              <span>📋 Lihat Rincian Hari Kerja Bulan Ini</span>
-              <span class="text-indigo-400 font-bold">→</span>
-            </button>
           </div>
         </div>
 
@@ -1390,18 +1390,18 @@
 
         if (isPeriodGapok) {
           cardGapok.classList.remove('hidden');
-          kpiContainer.className = "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3.5";
+          kpiContainer.className = "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-2.5 lg:gap-3";
           if (cardTHP) {
-            cardTHP.className = "bg-gradient-to-br from-indigo-50/90 via-white to-indigo-50/50 p-2.5 sm:p-4 rounded-xl border border-indigo-200 shadow-xs hover:shadow-sm transition flex flex-col justify-between col-span-2 sm:col-span-1";
+            cardTHP.className = "bg-gradient-to-br from-indigo-50/90 via-white to-indigo-50/50 p-2.5 sm:py-2.5 sm:px-3 rounded-xl border border-indigo-200 shadow-xs hover:shadow-sm transition flex flex-col justify-between col-span-2 sm:col-span-1";
           }
           gajiPokokVal = currentSettings.gajiPokok;
           adminFee = currentSettings.adminFee;
           document.getElementById('statGapok').innerText = idr(gajiPokokVal);
         } else {
           cardGapok.classList.add('hidden');
-          kpiContainer.className = "grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3.5";
+          kpiContainer.className = "grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5 lg:gap-3";
           if (cardTHP) {
-            cardTHP.className = "bg-gradient-to-br from-indigo-50/90 via-white to-indigo-50/50 p-2.5 sm:p-4 rounded-xl border border-indigo-200 shadow-xs hover:shadow-sm transition flex flex-col justify-between col-span-1 sm:col-span-1";
+            cardTHP.className = "bg-gradient-to-br from-indigo-50/90 via-white to-indigo-50/50 p-2.5 sm:py-2.5 sm:px-3 rounded-xl border border-indigo-200 shadow-xs hover:shadow-sm transition flex flex-col justify-between col-span-1 sm:col-span-1";
           }
           adminFee = 2500;
         }
